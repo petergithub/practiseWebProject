@@ -22,6 +22,7 @@ public class ControllerExample {
 	private static final String STATUS_SUCCESS = "statusSucess";
 	private static final String STATUS_UNKOWN_ERROR = "statusUnknowError";
 
+	//
 	@RequestMapping(value = "/getJson")
 	@ResponseBody // @ResponseBody is the default value if @RestController is set for the controller class
 	public String getJson(@RequestParam(required = true) String orderNums, final HttpServletRequest request) {
@@ -59,12 +60,11 @@ public class ControllerExample {
 		return result.toString();
 	}
 	
-	@RequestMapping(value = "/forward")
+	@RequestMapping(value = "forward")
 	public String forward(final HttpServletRequest request) {
 		log.info("Enter forward(request[{}])", request);
 		return "index.jsp";
 	}
-	
 
 	@RequestMapping(value = "/forward/second")
 	public String forwardSecond(final HttpServletRequest request) {
