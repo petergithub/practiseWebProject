@@ -22,7 +22,7 @@ public class ControllerExample {
 	private static final String STATUS_SUCCESS = "statusSucess";
 	private static final String STATUS_UNKOWN_ERROR = "statusUnknowError";
 
-	//
+	//http://localhost:8080/webapp/getJson
 	@RequestMapping(value = "/getJson")
 	@ResponseBody // @ResponseBody is the default value if @RestController is set for the controller class
 	public String getJson(@RequestParam(required = true) String orderNums, final HttpServletRequest request) {
