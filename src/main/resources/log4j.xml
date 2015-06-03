@@ -14,7 +14,7 @@
 	</appender>
 
 	<!-- File Output -->
-	<appender name="applog" class="org.apache.log4j.RollingFileAppender">
+	<appender name="file" class="org.apache.log4j.RollingFileAppender">
 		<param name="File" value="${log.dir}/logs/log4j.log" />
 		<!-- <param name="Threshold" value="DEBUG" /> -->
 		<param name="Encoding" value="UTF-8" />
@@ -27,7 +27,7 @@
 
 	<logger name="com.tcl.aot.mobile.web">
 		<level value="DEBUG" />
-		<appender-ref ref="applog" />
+		<appender-ref ref="file" />
 	</logger>
 
 	<logger name="org.springframework">
