@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,6 +28,8 @@ public class ControllerExample {
 	@ResponseBody // @ResponseBody is the default value if @RestController is set for the controller class
 	public String getJson(@RequestParam(required = true) String orderNums, final HttpServletRequest request) {
 		log.info("Enter getJson(orderNums[{}])", orderNums);
+		Assert.notNull(orderNums, "orderNumbs cannot be null");
+		Assert.hasText(orderNums, "orderNumbs must contain at least one non-whitespace character.");
 
 		JSONObject result = new JSONObject();
 		JSONArray ret = new JSONArray();
