@@ -23,7 +23,7 @@ public class ControllerExample {
 	private static final String STATUS_SUCCESS = "statusSucess";
 	private static final String STATUS_UNKOWN_ERROR = "statusUnknowError";
 
-	//http://localhost:8080/webapp/getJson
+	//http://localhost:8080/webapp/getJson?orderNums=['1','2']
 	@RequestMapping(value = "/getJson")
 	@ResponseBody // @ResponseBody is the default value if @RestController is set for the controller class
 	public String getJson(@RequestParam(required = true) String orderNums, final HttpServletRequest request) {
@@ -65,13 +65,20 @@ public class ControllerExample {
 	
 	@RequestMapping(value = "forward")
 	public String forward(final HttpServletRequest request) {
-		log.info("Enter forward(request[{}])", request);
+		log.info("Enter forward(forward)");
 		return "index.jsp";
 	}
 
 	@RequestMapping(value = "/forward/second")
 	public String forwardSecond(final HttpServletRequest request) {
-		log.info("Enter forward(request[{}])", request);
+		log.info("Enter forward(/forward/second)");
 		return "/index.jsp";
+	}
+	
+	//http://localhost:8080/webapp/forwardUnderWebInf
+	@RequestMapping(value = "/forwardUnderWebInf")
+	public String forwardUnderWebInf(final HttpServletRequest request) {
+		log.info("Enter forward(forwardUnderWebInf)");
+		return "WEB-INF/indexUnderWebInf.jsp";
 	}
 }
