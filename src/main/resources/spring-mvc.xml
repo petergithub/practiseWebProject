@@ -9,7 +9,7 @@
       http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd">
 
     <!-- auto scan only include @Controller-->
-    <context:component-scan base-package="org.pu" use-default-filters="false">
+    <context:component-scan base-package="org.peter" use-default-filters="false">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
     </context:component-scan>
 

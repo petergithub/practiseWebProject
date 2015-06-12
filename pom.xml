@@ -11,6 +11,7 @@
 	<properties>
 		<junit.version>4.10</junit.version>
 		<spring.version>4.1.1.RELEASE</spring.version>
+		<mybatis.version>3.2.8</mybatis.version>
 		<slf4j.version>1.7.7</slf4j.version>
 		<servlet.version>2.5</servlet.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -63,12 +64,19 @@
 			<artifactId>spring-jdbc</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
+
+		<!-- mybatis dependencies start -->
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-			<version>${spring.version}</version>
-			<scope>test</scope>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<version>${mybatis.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis-spring</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+		<!-- mybatis dependencies end -->
 
 		<dependency>
 			<groupId>cglib</groupId>
@@ -119,12 +127,18 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.3.6</version>
 		</dependency>
-		
+
 		<!-- Test -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
 			<scope>test</scope>
 		</dependency>
 

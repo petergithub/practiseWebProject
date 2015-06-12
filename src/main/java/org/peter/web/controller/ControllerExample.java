@@ -1,4 +1,4 @@
-package org.pu.web.controller;
+package org.peter.web.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
