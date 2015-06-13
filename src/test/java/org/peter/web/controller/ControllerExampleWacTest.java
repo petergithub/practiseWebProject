@@ -31,6 +31,9 @@ public class ControllerExampleWacTest extends TestSpringControllerBase {
 	}
 
 	@Test
+	public void test() {
+		
+	}
 	// result =
 	// {"order":[{"orderNums":"1","status":"status1"},{"orderNums":"2","status":"status2"}],"response":"statusSucess"}
 	//TODO fix the test

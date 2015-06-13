@@ -85,15 +85,7 @@ public class ControllerExampleTest extends TestSpringControllerBase {
 	}
 
 	public void testHttpStatusCode404() throws Exception {
-		mockMvc.perform(get("/api/todo/{id}", 1L)).andExpect(status().isNotFound());
+		mockMvc.perform(get("/api")).andExpect(status().isNotFound());
 	}
 
-	public void test() throws Exception {
-		// when(todoServiceMock.findById(1L)).thenThrow(new TodoNotFoundException(""));
-
-		mockMvc.perform(get("/api/todo/{id}", 1L)).andExpect(status().isNotFound());
-
-		// verify(todoServiceMock, times(1)).findById(1L);
-		// verifyNoMoreInteractions(todoServiceMock);
-	}
 }

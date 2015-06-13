@@ -6,6 +6,6 @@
   </head>  
     
   <body>  
-    ${user.userName}  
-  </body>  
+    lastName:${user.lastName},firstName:${user.firstName},creationDate:${user.creationDate}  
+  </body>
 </html> 
