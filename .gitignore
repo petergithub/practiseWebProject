@@ -8,7 +8,6 @@ bin/
 *.tar.gz
 src/main/webapp/WEB-INF/lib
 src/main/webapp/WEB-INF/classes
-src/test
 
 # eclipse ignore
 .settings/

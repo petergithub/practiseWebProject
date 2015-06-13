@@ -4,17 +4,20 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:util="http://www.springframework.org/schema/util" 
+	xmlns:tx="http://www.springframework.org/schema/tx" 
 	xsi:schemaLocation="http://www.springframework.org/schema/beans  
-                        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd  
+                        http://www.springframework.org/schema/beans/spring-beans-4.1.xsd  
                         http://www.springframework.org/schema/context  
-                        http://www.springframework.org/schema/context/spring-context-3.1.xsd  
+                        http://www.springframework.org/schema/context/spring-context-4.1.xsd  
 						http://www.springframework.org/schema/util 
-						http://www.springframework.org/schema/util/spring-util-3.0.xsd
+						http://www.springframework.org/schema/util/spring-util-4.1.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx-4.1.xsd    
                         http://www.springframework.org/schema/mvc  
-                        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd">
 
 	<!-- auto scan exclude @Controller-->
-	<context:component-scan base-package="org.pu">
+	<context:component-scan base-package="org.peter">
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
 
@@ -38,25 +41,25 @@
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
-		<property name="typeAliasesPackage" value="com.tcl.aot.domain" />
+		<property name="typeAliasesPackage" value="org.peter.web.domain" />
 	</bean>
 
 	<!-- Step#3: Configure SqlSessionTemplate which provides ThreadSafe SqlSession object. -->
-	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" scope="prototype">
 		<constructor-arg index="0" ref="sqlSessionFactory" />
 	</bean>
 
 	<!-- Step#4: To be able to inject Mappers directly we should register org.mybatis.spring.mapper.MapperScannerConfigurer 
 		and configure the package name where to find Mapper Interfaces. -->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="com.tcl.aot.mapper" />
+		<property name="basePackage" value="org.peter.web.mapper" />
 	</bean>
 
 	<!-- Step#5: Configure TransactionManager to support Annotation based Transaction support. -->
-<!-- 	<tx:annotation-driven transaction-manager="transactionManager" />
+	<tx:annotation-driven transaction-manager="transactionManager" />
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
-	</bean> -->
+	</bean>
 
 </beans>
