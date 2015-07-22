@@ -77,6 +77,25 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Excel library -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.6</version>
+		</dependency>
+	
+		<!-- JSTL --> 
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>jstl</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+
 		<!-- Log -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -140,6 +159,15 @@
 		<finalName>testWebProject</finalName>
 		<testOutputDirectory>${basedir}/target/test-classes</testOutputDirectory>
 		<plugins>
+			<!-- Attach Library Sources and Javadocs -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+				</configuration>
+			</plugin>
 			<!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>

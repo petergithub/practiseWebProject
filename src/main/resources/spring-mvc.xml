@@ -47,7 +47,14 @@
 		<property name="suffix" value=".jsp" />
 		<!-- <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/> -->
 	</bean>
-	
+
+	<!-- export excel BEGIN -->
+	<bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping" />
+	<bean class="org.springframework.web.servlet.view.XmlViewResolver">
+		<property name="location" value="classpath:spring-excel-views.xml" />
+        <property name="order" value="1" />
+	</bean>
+	<!-- export excel END -->
 
 	<!--避免IE执行AJAX时，返回JSON出现下载文件 -->
 <!-- 	<bean id="mappingJacksonHttpMessageConverter"
