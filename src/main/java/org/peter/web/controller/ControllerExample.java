@@ -8,11 +8,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 
 @Controller
@@ -21,46 +21,66 @@ import com.alibaba.fastjson.JSONObject;
 public class ControllerExample {
 	private static final Logger log = LoggerFactory.getLogger(ControllerExample.class);
 
-	private static final String STATUS_SUCCESS = "statusSucess";
-	private static final String STATUS_UNKOWN_ERROR = "statusUnknowError";
+	private static final String STATUS_SUCCESS = "Sucess";
+	private static final String STATUS_UNKOWN_ERROR = "UnknowError";
 
-	//http://localhost:8080/webapp/getJson?orderNums=['1','2']
-	@RequestMapping(value = "/getJson")
+	//http://localhost:8080/webapp/getJson?names=['1','2']&id=2
+	@RequestMapping(value = "/getJson", method = {RequestMethod.POST, RequestMethod.GET})
 	@ResponseBody // @ResponseBody is the default value if @RestController is set for the controller class
-	public String getJson(@RequestParam(required = true) String orderNums, final HttpServletRequest request) {
-		log.info("Enter getJson(orderNums[{}])", orderNums);
-		Assert.notNull(orderNums, "orderNumbs cannot be null");
-		Assert.hasText(orderNums, "orderNumbs must contain at least one non-whitespace character.");
+	public String getJson(@RequestParam(required = true) String names, 
+			@RequestParam(defaultValue = "1") Integer id,
+			final HttpServletRequest request) {
+		log.info("Enter getJson(names[{}])", names);
+		Assert.hasText(names, "names must contain at least one non-whitespace character.");
+		
+		//1. id has default value 1
+		//2. id maybe null with URL: webapp/getJson?id=&names=['1','2']
+		Assert.notNull(id, "id cannot be null");
 
 		JSONObject result = new JSONObject();
 		JSONArray ret = new JSONArray();
 		String statusCode = STATUS_SUCCESS;
-		// default status code
-		result.put("response", statusCode);
 
+		//try catch all Exceptions
 		try {
-			JSONArray orderArray = JSONArray.parseArray(orderNums);
-			Object[] orderNumArray = orderArray.toArray();
-			for (Object orderNum : orderNumArray) {
-				log.debug("orderNum = {}", orderNum);
+			// default status code
+			result.put("response", statusCode);
+			JSONArray orderArray = JSONArray.parseArray(names);
+			Object[] nameArray = orderArray.toArray();
+			for (Object name : nameArray) {
+				log.debug("name = {}", name);
 				JSONObject o = new JSONObject();
-				try {
-					o.put("orderNums", orderNum);
-					o.put("status", "status" + orderNum);
-					ret.add(o);
-				} catch (JSONException e) {
-					log.error("JSONException in OrderStatusApi.getStatus()", e);
-					statusCode = STATUS_UNKOWN_ERROR;
-				}
+				o.put("name", name);
+				ret.add(o);
 			}
 		} catch (Exception e) {
 			log.error("Exception in OrderStatusApi.getStatus()", e);
 			statusCode = STATUS_UNKOWN_ERROR;
 			result.put("response", statusCode);
 		}
-		result.put("order", ret);
+		result.put("names", ret);
+		result.put("id", id);
 
-		log.debug("Exit getStatus() result = {}", result);
+		log.debug("Exit getJson() result = {}", result);
+		return result.toString();
+	}
+	
+
+	// http://localhost:8080/webapp/getBean?name=n1&id=1
+	// bean[Bean [id=1, name=n1]]
+	// http://localhost:8080/webapp/getBean?name=n1&id=1&name=n2&id=2
+	// http://localhost:8080/webapp/getBean?name=n1&id=1&name=n2&id=2&value=v1&value=v2
+	// bean[Bean [id=1, name=n1,n2, value=v1,v2]]
+	@RequestMapping(value = "/getBean", method = RequestMethod.GET)
+	@ResponseBody
+	public String getBean(Bean bean, final HttpServletRequest request) {
+		log.info("Enter getBean(bean[{}])", bean);
+
+		JSONObject result = new JSONObject();
+		String statusCode = STATUS_SUCCESS;
+		result.put("response", statusCode);
+		result.put("bean", bean.toJson());
+		log.debug("Exit getBean() result = {}", result);
 		return result.toString();
 	}
 	
@@ -108,4 +128,46 @@ public class ControllerExample {
         log.info("redirectViewPath = {}", redirectViewPath);
         return redirectViewPath.toString();
     }
+}
+
+class Bean {
+	private Long id;
+	private String name;
+	private String value;
+	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Bean [id=").append(id).append(", name=").append(name).append(", value=").append(value)
+				.append("]");
+		return builder.toString();
+	}
+	
+	public JSONObject toJson() {
+		JSONObject json = new JSONObject();
+		json.put("id", id);
+		json.put("name", name);
+		json.put("value", value);
+		return json;
+	}
+	
+	public Long getId() {
+		return id;
+	}
+	public void setId(Long id) {
+		this.id = id;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getValue() {
+		return value;
+	}
+	public void setValue(String value) {
+		this.value = value;
+	}
+	
 }
