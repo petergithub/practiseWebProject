@@ -13,6 +13,8 @@ import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -29,6 +31,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @WebAppConfiguration
 public class ControllerExampleTest extends TestSpringControllerBase {
 	private MockMvc mockMvc;
+	private static final Logger log = LoggerFactory.getLogger(ControllerExampleTest.class);
 
 	@Before
 	public void setUp() {
@@ -42,21 +45,36 @@ public class ControllerExampleTest extends TestSpringControllerBase {
 	}
 
 	// result =
-	// {"order":[{"orderNums":"1","status":"status1"},{"orderNums":"2","status":"status2"}],"response":"statusSucess"}
+	// {"id":1,"names":[{"name":"1"},{"name":"2"}],"response":0},Sucess
 	// http://goessner.net/articles/JsonPath/
-	@Test
+//	@Test
 	public void testGetJson() throws Exception {
-		mockMvc.perform(get("/getJson?orderNums=['1','2']"))
+		mockMvc.perform(get("/getJson?names=['1','2']"))
 			.andExpect(MockMvcResultMatchers.status().isOk());
 		
-		mockMvc.perform(post("/getJson").param("orderNums", "['1','2']"))
+		mockMvc.perform(post("/getJson").param("names", "['name1','name2']"))
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				// .andExpect(content().contentType(APPLICATION_JSON_UTF8))
-				.andExpect(jsonPath("$.order", Matchers.hasSize(2)))
-				.andExpect(jsonPath("$.order[0].orderNums", Matchers.is("1")))
-				.andExpect(jsonPath("$.order[0].status", Matchers.is("status1")))
-				.andExpect(jsonPath("$.response", Matchers.is("statusSucess")))
+				.andExpect(jsonPath("$.names", Matchers.hasSize(2)))
+				.andExpect(jsonPath("$.names[0].name", Matchers.is("name1")))
+				.andExpect(jsonPath("$.names[1].name", Matchers.is("name2")))
+				.andExpect(jsonPath("$.response", Matchers.is(0)))
 				.andDo(MockMvcResultHandlers.print());
+	}
+	
+	@Test
+	public void testLogGetPost() throws Exception {
+		mockMvc.perform(get("/getJson?names=['name1','name2']"));
+		mockMvc.perform(get("/getJson?id=&names=['name1','name2']"));
+		mockMvc.perform(get("/getJson?id=2&names=['name1','name2']")).andExpect(MockMvcResultMatchers.status().isOk());
+		
+		log.info("post");
+		mockMvc.perform(post("/getJson?names=['1','2']").param("names", "['name1','name2']").param("id", "1").param("id", "2")).andExpect(MockMvcResultMatchers.status().isOk());
+		mockMvc.perform(post("/getJson?names=['inUrl']").param("names", "['name1','name2']").param("id", "1").param("id", "2")).andExpect(MockMvcResultMatchers.status().isOk());
+		mockMvc.perform(post("/getJson").param("names", "name1").param("names", "name2").param("id", "1").param("id", "2")).andExpect(MockMvcResultMatchers.status().isOk());
+		mockMvc.perform(post("/getJson?names=['inUrl']").param("names", "name1").param("names", "name2").param("id", "1").param("id", "2")).andExpect(MockMvcResultMatchers.status().isOk());
+		mockMvc.perform(post("/getJson?names=inUrl").param("names", "name1").param("names", "name2").param("id", "1").param("id", "2")).andExpect(MockMvcResultMatchers.status().isOk());
+		mockMvc.perform(post("/getJson").param("names", "").param("id", "1").param("id", "2")).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	public void testRedirect() throws Exception {

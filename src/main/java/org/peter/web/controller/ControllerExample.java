@@ -1,7 +1,11 @@
 package org.peter.web.controller;
 
+import static org.peter.util.RetConstants.KEY_RESPONSE;
+import static org.peter.util.LogUtil.returnJson;
+
 import javax.servlet.http.HttpServletRequest;
 
+import org.peter.bean.HeaderBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -23,6 +27,8 @@ public class ControllerExample {
 
 	private static final String STATUS_SUCCESS = "Sucess";
 	private static final String STATUS_UNKOWN_ERROR = "UnknowError";
+	private static final int STATUS_CODE_SUCCESS = 0;
+	private static final int STATUS_CODE_UNKOWN_ERROR = 4;
 
 	//http://localhost:8080/webapp/getJson?names=['1','2']&id=2
 	@RequestMapping(value = "/getJson", method = {RequestMethod.POST, RequestMethod.GET})
@@ -30,8 +36,8 @@ public class ControllerExample {
 	public String getJson(@RequestParam(required = true) String names, 
 			@RequestParam(defaultValue = "1") Integer id,
 			final HttpServletRequest request) {
-		log.info("Enter getJson(names[{}])", names);
-		Assert.hasText(names, "names must contain at least one non-whitespace character.");
+//		Assert.hasText(names, "names must contain at least one non-whitespace character.");
+		HeaderBean hb = new HeaderBean();
 		
 		//1. id has default value 1
 		//2. id maybe null with URL: webapp/getJson?id=&names=['1','2']
@@ -39,33 +45,30 @@ public class ControllerExample {
 
 		JSONObject result = new JSONObject();
 		JSONArray ret = new JSONArray();
-		String statusCode = STATUS_SUCCESS;
+		int statusCode = STATUS_CODE_SUCCESS;
+		String msg = STATUS_SUCCESS;
 
 		//try catch all Exceptions
 		try {
 			// default status code
-			result.put("response", statusCode);
 			JSONArray orderArray = JSONArray.parseArray(names);
 			Object[] nameArray = orderArray.toArray();
 			for (Object name : nameArray) {
-				log.debug("name = {}", name);
 				JSONObject o = new JSONObject();
 				o.put("name", name);
 				ret.add(o);
 			}
 		} catch (Exception e) {
-			log.error("Exception in OrderStatusApi.getStatus()", e);
-			statusCode = STATUS_UNKOWN_ERROR;
-			result.put("response", statusCode);
+//			log.error("Exception in OrderStatusApi.getStatus()", e);
+			statusCode = STATUS_CODE_UNKOWN_ERROR;
+			msg = STATUS_UNKOWN_ERROR;
 		}
 		result.put("names", ret);
 		result.put("id", id);
 
-		log.debug("Exit getJson() result = {}", result);
-		return result.toString();
+		return returnJson(log, result, request, hb, statusCode, msg);
 	}
 	
-
 	// http://localhost:8080/webapp/getBean?name=n1&id=1
 	// bean[Bean [id=1, name=n1]]
 	// http://localhost:8080/webapp/getBean?name=n1&id=1&name=n2&id=2
@@ -78,7 +81,7 @@ public class ControllerExample {
 
 		JSONObject result = new JSONObject();
 		String statusCode = STATUS_SUCCESS;
-		result.put("response", statusCode);
+		result.put(KEY_RESPONSE, statusCode);
 		result.put("bean", bean.toJson());
 		log.debug("Exit getBean() result = {}", result);
 		return result.toString();

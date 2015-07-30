@@ -38,7 +38,7 @@ public class ControllerExampleWacTest extends TestSpringControllerBase {
 	// {"order":[{"orderNums":"1","status":"status1"},{"orderNums":"2","status":"status2"}],"response":"statusSucess"}
 	//TODO fix the test
 	public void testGetJson() throws Exception {
-		mockMvc.perform(get("/getJson?orderNums=['1','2']"))
+		mockMvc.perform(get("/getJson?orderNums=['1','2']&id=2"))
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(jsonPath("$.order", Matchers.hasSize(2)))
 				.andExpect(jsonPath("$.response", Matchers.is("statusSucess")));
