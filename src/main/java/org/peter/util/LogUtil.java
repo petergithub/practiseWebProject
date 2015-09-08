@@ -40,6 +40,12 @@ public class LogUtil {
 			String response, Object e) {
 		log.info("{},{},{},{},{},{}", new Object[] { uri, ip, header, params, response, e });
 	}
+
+	public static String buildResult(String result, HttpServletRequest request, Logger log) {
+		// LogUtil.info(log, request.getRequestURI(), IpUtils.getIp(request),
+		// getParameters(request), hb.toString(), ret.toString(), msg);
+		return result;
+	}
 	
 	public static String returnJson(Logger log, JSONObject ret, HttpServletRequest req, HeaderBean hb,
 			int respCode, String msg) {

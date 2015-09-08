@@ -1,12 +1,19 @@
 package org.peter.web.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
+import org.peter.bean.Bean;
+import org.peter.bean.Criteria;
+import org.peter.bean.JsonResult;
+import org.peter.util.LogUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.Assert;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,12 +36,13 @@ public class ControllerExample {
 	@ResponseBody // @ResponseBody is the default value if @RestController is set for the controller class
 	public String getJson(@RequestParam(required = true) String names, 
 			@RequestParam(defaultValue = "1") Integer id,
+			@RequestParam(defaultValue = "20") int pageSize,
 			final HttpServletRequest request) {
 		log.info("Enter getJson(names[{}])", names);
 		Assert.hasText(names, "names must contain at least one non-whitespace character.");
 		
 		//1. id has default value 1
-		//2. id maybe null with URL: webapp/getJson?id=&names=['1','2']
+		//2. Integer id maybe null with URL: webapp/getJson?id=&names=['1','2']
 		Assert.notNull(id, "id cannot be null");
 
 		JSONObject result = new JSONObject();
@@ -84,6 +92,38 @@ public class ControllerExample {
 		return result.toString();
 	}
 	
+	// http://localhost:8080/webapp/getCriteria?id=3&sort=sort&order=&pageNo=1&name=name
+	// no validation error
+	// http://localhost:8080/webapp/getCriteria?id=&sort=s&order=&pageNo=
+	// get validation error: Long id is null, 
+	// int pageNo is not null but with convert exception
+	// sort is short than 2
+	@RequestMapping(value = "/getCriteria", method = RequestMethod.GET)
+	@ResponseBody
+	public String getCriteria(@Valid Criteria criteria, BindingResult result,
+			HttpServletRequest request) {
+		log.info("Enter getCriteria(criteria[{}])", criteria);
+		Bean bean = new Bean();
+		BeanUtils.copyProperties(criteria, bean);
+		log.info("bean = {}", bean);
+		
+		JsonResult json = new JsonResult();
+		if (result.hasErrors()) {
+	        log.error("result.getFieldErrors() = {}", result.getFieldErrors());
+			// Field error in object 'criteria' on field 'id': rejected value
+			// [null]; codes
+			// [NotNull.criteria.id,NotNull.id,NotNull.java.lang.Long,NotNull];
+			// arguments
+			// [org.springframework.context.support.DefaultMessageSourceResolvable:
+			// codes [criteria.id,id]; arguments []; default message [id]];
+			// default message [Required id]
+			json = new JsonResult("1", "Invalid parameter", criteria);
+	    } else {
+	    	json = new JsonResult("0", "Success", criteria);
+	    }
+		return LogUtil.buildResult(json.toJsonString(), request, log);
+	}
+	
 	@RequestMapping(value = "forward")
 	public String forward(final HttpServletRequest request, Model model) {
 		log.info("Enter forward(forward)");
@@ -128,46 +168,4 @@ public class ControllerExample {
         log.info("redirectViewPath = {}", redirectViewPath);
         return redirectViewPath.toString();
     }
-}
-
-class Bean {
-	private Long id;
-	private String name;
-	private String value;
-	
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Bean [id=").append(id).append(", name=").append(name).append(", value=").append(value)
-				.append("]");
-		return builder.toString();
-	}
-	
-	public JSONObject toJson() {
-		JSONObject json = new JSONObject();
-		json.put("id", id);
-		json.put("name", name);
-		json.put("value", value);
-		return json;
-	}
-	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getValue() {
-		return value;
-	}
-	public void setValue(String value) {
-		this.value = value;
-	}
-	
 }
