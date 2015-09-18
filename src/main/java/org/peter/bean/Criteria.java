@@ -1,5 +1,7 @@
 package org.peter.bean;
 
+import java.util.List;
+
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -20,6 +22,9 @@ public class Criteria {
 	private Long id; // 查询ID
 	@NotBlank
 	private String name;
+	
+	private List<String> values;
+	
 	@Size(min = 2, max = 4)
 	private String sort; // 排序字段 默认操作时间
 	@NotNull
@@ -30,8 +35,9 @@ public class Criteria {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Criteria [id=").append(id).append(", name=").append(name).append(", sort=")
-				.append(sort).append(", order=").append(order).append(", pageNo=").append(pageNo)
+		builder.append("Criteria [id=").append(id).append(", name=").append(name)
+				.append(", values=").append(values).append(", sort=").append(sort)
+				.append(", order=").append(order).append(", pageNo=").append(pageNo)
 				.append(", pageSize=").append(pageSize).append("]");
 		return builder.toString();
 	}
@@ -82,6 +88,14 @@ public class Criteria {
 
 	public void setPageSize(int pageSize) {
 		this.pageSize = pageSize;
+	}
+
+	public List<String> getValues() {
+		return values;
+	}
+
+	public void setValues(List<String> values) {
+		this.values = values;
 	}
 
 }

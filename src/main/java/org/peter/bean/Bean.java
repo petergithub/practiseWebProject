@@ -1,11 +1,25 @@
 package org.peter.bean;
 
+import javax.validation.constraints.NotNull;
+
 import com.alibaba.fastjson.JSONObject;
 
 public class Bean {
+	@NotNull
 	private Long id;
 	private String name;
 	private String value;
+
+	public Bean(Long id, String name, String value) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.value = value;
+	}
+
+	public Bean() {
+		super();
+	}
 
 	@Override
 	public String toString() {

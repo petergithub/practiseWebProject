@@ -9,10 +9,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.peter.bean.Bean;
+import org.peter.bean.BeanImplList;
+import org.peter.bean.BeanList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -21,6 +29,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import com.alibaba.fastjson.JSONArray;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 // detects "WacTests-context.xml" in same package
 // or static nested @Configuration class
@@ -28,7 +38,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 // defaults to "file:src/main/webapp"
 @WebAppConfiguration
 public class ControllerExampleTest extends TestSpringControllerBase {
-	private MockMvc mockMvc;
+	private static final Logger log = LoggerFactory.getLogger(ControllerExampleTest.class);
+
+	private MockMvc mvc;
 
 	@Before
 	public void setUp() {
@@ -37,19 +49,66 @@ public class ControllerExampleTest extends TestSpringControllerBase {
 		// stubbing and verified behavior would "leak" from one test to another.
 		// Mockito.reset(todoServiceMock);
 
-		this.mockMvc = MockMvcBuilders.standaloneSetup(new ControllerExample())
-                .setViewResolvers(viewResolver()).build();
+		this.mvc = MockMvcBuilders.standaloneSetup(new ControllerExample())
+				.setViewResolvers(viewResolver()).build();
+	}
+
+//	NestedServletException
+	public void testGetBeanArray() throws Exception {
+		
+		Bean bean = new Bean(1l, "name1", "value1");
+		
+		mvc.perform(get("/getBeanArray")).andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
+	public void testGetBeanStr() throws Exception {
+		String json = "\"beans\":[{id:1,name:\"name1\",value:\"value1\"}]";
+		log.info("json = {}", json);
+		mvc.perform(post("/getBeanStr").param("beans", json).param("test", "ta")).andExpect(
+				MockMvcResultMatchers.status().isOk());
+	}
+
+	public void testGetBeanImplList() throws Exception {
+		BeanImplList beans = new BeanImplList();
+		beans.add(new Bean(1l, "name1", "value1"));
+
+		// json = [{"id":1,"name":"name1","value":"value1"}]
+		String json = JSONArray.toJSONString(beans);
+
+		log.info("json = {}", json);
+		mvc.perform(
+				post("/getBeanImplList").param("beans", json).contentType(APPLICATION_JSON_UTF8)
+						.content(json)).andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
+	@Test
+	public void testGetBeanList() throws Exception {
+		List<Bean> beanList = new ArrayList<>();
+		beanList.add(new Bean(null, "name1", "value1"));
+		BeanList beans = new BeanList(beanList);
+
+		// json = {"beans":[{"id":1,"name":"name1","value":"value1"}]}
+		String json = JSONArray.toJSONString(beans);
+		log.info("json = {}", json);
+		mvc.perform(post("/getBeanList").contentType(APPLICATION_JSON_UTF8).content(json))
+				.andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
+	public void testGetBeanCriteria() throws Exception {
+		mvc.perform(
+				post("/getBeanCriteria").param("id", "1").param("value", "value")
+						.param("name", "name").param("test", "ta")).andExpect(
+				MockMvcResultMatchers.status().isOk());
 	}
 
 	// result =
 	// {"order":[{"orderNums":"1","status":"status1"},{"orderNums":"2","status":"status2"}],"response":"statusSucess"}
 	// http://goessner.net/articles/JsonPath/
-	@Test
 	public void testGetJson() throws Exception {
-		mockMvc.perform(get("/getJson?orderNums=['1','2']"))
-			.andExpect(MockMvcResultMatchers.status().isOk());
-		
-		mockMvc.perform(post("/getJson").param("orderNums", "['1','2']"))
+		mvc.perform(get("/getJson?orderNums=['1','2']")).andExpect(
+				MockMvcResultMatchers.status().isOk());
+
+		mvc.perform(post("/getJson").param("orderNums", "['1','2']"))
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				// .andExpect(content().contentType(APPLICATION_JSON_UTF8))
 				.andExpect(jsonPath("$.order", Matchers.hasSize(2)))
@@ -60,32 +119,28 @@ public class ControllerExampleTest extends TestSpringControllerBase {
 	}
 
 	public void testRedirect() throws Exception {
-		mockMvc.perform(get("/redirect"))
-		.andExpect(MockMvcResultMatchers.status().isFound())
-		.andExpect(view().name("redirect:redirectPath"))
-		.andExpect(redirectedUrl("redirectPath"));
+		mvc.perform(get("/redirect")).andExpect(MockMvcResultMatchers.status().isFound())
+				.andExpect(view().name("redirect:redirectPath"))
+				.andExpect(redirectedUrl("redirectPath"));
 	}
 
 	public void testForwardUnderWebInf() throws Exception {
-		mockMvc.perform(get("/forwardUnderWebInf"))
-				.andExpect(MockMvcResultMatchers.status().isOk())
+		mvc.perform(get("/forwardUnderWebInf")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(view().name("indexUnderWebInf"))
 				.andExpect(forwardedUrl("/WEB-INF/jsp/indexUnderWebInf.jsp"));
 	}
 
 	public void testForward() throws Exception {
-		mockMvc.perform(get("/forward"))
-				.andExpect(MockMvcResultMatchers.status().isOk())
+		mvc.perform(get("/forward")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(view().name("index.jsp"))
 				.andExpect(model().attribute("value", Matchers.is("value")));
-		
-		mockMvc.perform(get("/forward/second"))
-				.andExpect(MockMvcResultMatchers.status().isOk())
+
+		mvc.perform(get("/forward/second")).andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(view().name("/index.jsp"));
 	}
 
 	public void testHttpStatusCode404() throws Exception {
-		mockMvc.perform(get("/api")).andExpect(status().isNotFound());
+		mvc.perform(get("/api")).andExpect(status().isNotFound());
 	}
 
 }
