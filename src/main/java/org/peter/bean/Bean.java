@@ -1,14 +1,31 @@
 package org.peter.bean;
 
-import javax.validation.constraints.NotNull;
+import java.util.Date;
 
-import com.alibaba.fastjson.JSONObject;
+import javax.validation.constraints.NotNull;
 
 public class Bean {
 	@NotNull
 	private Long id;
 	private String name;
 	private String value;
+	private Date creationDate;
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Bean [id=").append(id).append(", name=").append(name).append(", value=")
+				.append(value).append(", creationDate=").append(creationDate).append("]");
+		return builder.toString();
+	}
+
+	public Bean(Long id, String name, String value, Date creationDate) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.value = value;
+		this.creationDate = creationDate;
+	}
 
 	public Bean(Long id, String name, String value) {
 		super();
@@ -19,22 +36,6 @@ public class Bean {
 
 	public Bean() {
 		super();
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Bean [id=").append(id).append(", name=").append(name).append(", value=")
-				.append(value).append("]");
-		return builder.toString();
-	}
-
-	public JSONObject toJson() {
-		JSONObject json = new JSONObject();
-		json.put("id", id);
-		json.put("name", name);
-		json.put("value", value);
-		return json;
 	}
 
 	public Long getId() {
@@ -59,6 +60,14 @@ public class Bean {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public Date getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(Date creationDate) {
+		this.creationDate = creationDate;
 	}
 
 }

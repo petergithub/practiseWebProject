@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
@@ -32,8 +33,8 @@ import com.alibaba.fastjson.JSONObject;
 @RestController
 @RequestMapping
 // ("/query/order")
-public class ControllerExample {
-	private static final Logger log = LoggerFactory.getLogger(ControllerExample.class);
+public class PractiseController {
+	private static final Logger log = LoggerFactory.getLogger(PractiseController.class);
 
 	private static final String STATUS_SUCCESS = "Sucess";
 	private static final String STATUS_UNKOWN_ERROR = "UnknowError";
@@ -94,7 +95,8 @@ public class ControllerExample {
 		JSONObject result = new JSONObject();
 		String statusCode = STATUS_SUCCESS;
 		result.put("response", statusCode);
-		result.put("bean", bean.toJson());
+		log.info("JSON.toJSONString(bean) = {}", JSON.toJSONString(bean));
+		result.put("bean", bean);
 		log.debug("Exit getBean() result = {}", result);
 		return result.toString();
 	}

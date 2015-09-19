@@ -10,9 +10,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.hamcrest.Matchers;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +31,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -37,13 +40,13 @@ import com.alibaba.fastjson.JSONArray;
 @ContextConfiguration(locations = { "classpath:spring*.xml" })
 // defaults to "file:src/main/webapp"
 @WebAppConfiguration
-public class ControllerExampleTest extends TestSpringControllerBase {
-	private static final Logger log = LoggerFactory.getLogger(ControllerExampleTest.class);
+public class TestPractiseController extends TestSpringControllerBase {
+	private static final Logger log = LoggerFactory.getLogger(TestPractiseController.class);
 
 	private MockMvc mvc;
 
-//	@Autowired
-	private ControllerExample controller = new ControllerExample();
+	// @Autowired
+	private PractiseController controller = new PractiseController();
 
 	@Before
 	public void setUp() {
@@ -52,16 +55,33 @@ public class ControllerExampleTest extends TestSpringControllerBase {
 		// stubbing and verified behavior would "leak" from one test to another.
 		// Mockito.reset(todoServiceMock);
 
-		this.mvc = MockMvcBuilders.standaloneSetup(controller)
-				.setViewResolvers(viewResolver()).build();
+		this.mvc = MockMvcBuilders.standaloneSetup(controller).setViewResolvers(viewResolver())
+				.build();
 	}
 
-//	NestedServletException
+	// NestedServletException
 	public void testGetBeanArray() throws Exception {
-		
+
 		Bean bean = new Bean(1l, "name1", "value1");
-		
+
 		mvc.perform(get("/getBeanArray")).andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
+	@Test
+	public void testGetBean() throws Exception {
+		Date date = new DateTime().toDate();
+		Bean bean = new Bean(1l, "name1", "value1", date);
+		String json = JSON.toJSONString(bean); 
+		log.info("json = {}", json);
+		String creationDate = date.toString();
+		mvc.perform(get("/getBean")
+				.param("id", "1")
+				.param("name", "name1")
+				.param("value", "value1")
+				.param("creationDate", creationDate))
+				.andExpect(
+				MockMvcResultMatchers.status().isOk());
+		// .andExpect(content().contentType("application/json;charset=UTF-8"));
 	}
 
 	public void testGetBeanStr() throws Exception {
@@ -85,7 +105,6 @@ public class ControllerExampleTest extends TestSpringControllerBase {
 						.content(json)).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
-	@Test
 	public void testGetBeanList() throws Exception {
 		List<Bean> beanList = new ArrayList<>();
 		beanList.add(new Bean(null, "name1", "value1"));
