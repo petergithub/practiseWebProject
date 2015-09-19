@@ -14,7 +14,7 @@ import org.peter.util.LogUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.util.Assert;
 import org.springframework.validation.BindingResult;
@@ -23,12 +23,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
-@Controller
-// @RestController
+//@Controller
+@RestController
 @RequestMapping
 // ("/query/order")
 public class ControllerExample {
@@ -38,7 +39,7 @@ public class ControllerExample {
 	private static final String STATUS_UNKOWN_ERROR = "UnknowError";
 
 	// http://localhost:8080/webapp/getJson?names=['1','2']&id=2
-	@RequestMapping(value = "/getJson", method = { RequestMethod.POST, RequestMethod.GET })
+	@RequestMapping(value = "/getJson", method = { RequestMethod.POST, RequestMethod.GET }, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	// @ResponseBody is the default value if @RestController is set for the
 	// controller class
@@ -100,7 +101,17 @@ public class ControllerExample {
 
 	@RequestMapping(value = "/getBeanList", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
-	public String getBeanList(@Valid @RequestBody BeanList beans, BindingResult result,
+	public String getBeanList(@Valid @RequestBody List<Bean> beans, BindingResult result,
+			HttpServletRequest request) {
+		log.info("Enter getBeanList(beans[{}])", beans);
+
+		String json = JSONArray.toJSONString(beans);
+		return LogUtil.buildResult(json, request, log);
+	}
+
+	@RequestMapping(value = "/getBeanListWrapper", method = { RequestMethod.GET, RequestMethod.POST })
+	@ResponseBody
+	public String getBeanListWrapper(@Valid @RequestBody BeanList beans, BindingResult result,
 			HttpServletRequest request) {
 		log.info("Enter getBeanList(beans[{}])", beans);
 		List<Bean> beanList = beans.getBeans();
@@ -131,7 +142,8 @@ public class ControllerExample {
 
 	@RequestMapping(value = "/getBeanArray", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
-	public String getBeanArray(@RequestBody Bean[] beans, BindingResult result, HttpServletRequest request) {
+	public String getBeanArray(@RequestBody Bean[] beans, BindingResult result,
+			HttpServletRequest request) {
 		log.info("Enter getBeanArray(beans[{}])", beans[0]);
 
 		String json = JSONArray.toJSONString(beans);

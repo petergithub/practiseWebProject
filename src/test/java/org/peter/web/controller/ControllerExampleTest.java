@@ -42,6 +42,9 @@ public class ControllerExampleTest extends TestSpringControllerBase {
 
 	private MockMvc mvc;
 
+//	@Autowired
+	private ControllerExample controller = new ControllerExample();
+
 	@Before
 	public void setUp() {
 		// We have to reset our mock between tests because the mock objects
@@ -49,7 +52,7 @@ public class ControllerExampleTest extends TestSpringControllerBase {
 		// stubbing and verified behavior would "leak" from one test to another.
 		// Mockito.reset(todoServiceMock);
 
-		this.mvc = MockMvcBuilders.standaloneSetup(new ControllerExample())
+		this.mvc = MockMvcBuilders.standaloneSetup(controller)
 				.setViewResolvers(viewResolver()).build();
 	}
 
@@ -66,6 +69,7 @@ public class ControllerExampleTest extends TestSpringControllerBase {
 		log.info("json = {}", json);
 		mvc.perform(post("/getBeanStr").param("beans", json).param("test", "ta")).andExpect(
 				MockMvcResultMatchers.status().isOk());
+		// .andExpect(content().contentType("application/json;charset=UTF-8"));
 	}
 
 	public void testGetBeanImplList() throws Exception {
