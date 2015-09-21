@@ -20,14 +20,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
 @RestController
-public class PractiseDateBinderController {
+public class PractiseDateBinderController extends BaseController{
 	private static final Logger log = LoggerFactory.getLogger(PractiseDateBinderController.class);
 
 	private static final String STATUS_SUCCESS = "Sucess";
 
-	@RequestMapping(value = "/getBean", method = RequestMethod.GET)
+	@RequestMapping(value = "/getDate", method = RequestMethod.GET)
 	@ResponseBody
-	public String getBean(Bean bean, final HttpServletRequest request) {
+	public String getDate(Bean bean, final HttpServletRequest request) {
 		log.info("Enter getBean(bean[{}])", bean);
 
 		JSONObject result = new JSONObject();

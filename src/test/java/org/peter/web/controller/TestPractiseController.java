@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.hamcrest.Matchers;
@@ -21,8 +20,10 @@ import org.junit.runner.RunWith;
 import org.peter.bean.Bean;
 import org.peter.bean.BeanImplList;
 import org.peter.bean.BeanList;
+import org.peter.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -37,7 +38,7 @@ import com.alibaba.fastjson.JSONArray;
 @RunWith(SpringJUnit4ClassRunner.class)
 // detects "WacTests-context.xml" in same package
 // or static nested @Configuration class
-@ContextConfiguration(locations = { "classpath:spring*.xml" })
+@ContextConfiguration(locations = { "classpath*:spring*.xml" })
 // defaults to "file:src/main/webapp"
 @WebAppConfiguration
 public class TestPractiseController extends TestSpringControllerBase {
@@ -45,8 +46,8 @@ public class TestPractiseController extends TestSpringControllerBase {
 
 	private MockMvc mvc;
 
-	// @Autowired
-	private PractiseController controller = new PractiseController();
+	@Autowired
+	private PractiseController controller;
 
 	@Before
 	public void setUp() {
@@ -69,17 +70,14 @@ public class TestPractiseController extends TestSpringControllerBase {
 
 	@Test
 	public void testGetBean() throws Exception {
-		Date date = new DateTime().toDate();
-		Bean bean = new Bean(1l, "name1", "value1", date);
-		String json = JSON.toJSONString(bean); 
+		DateTime date = new DateTime();
+		Bean bean = new Bean(1l, "name1", "value1", date.toDate());
+		String json = JSON.toJSONString(bean);
 		log.info("json = {}", json);
-		String creationDate = date.toString();
-		mvc.perform(get("/getBean")
-				.param("id", "1")
-				.param("name", "name1")
-				.param("value", "value1")
-				.param("creationDate", creationDate))
-				.andExpect(
+		String creationDate = date.toString(Constants.dateFormat);
+		mvc.perform(
+				get("/getBean").param("id", "1").param("name", "name1").param("value", "value1")
+						.param("creationDate", creationDate)).andExpect(
 				MockMvcResultMatchers.status().isOk());
 		// .andExpect(content().contentType("application/json;charset=UTF-8"));
 	}
@@ -164,6 +162,11 @@ public class TestPractiseController extends TestSpringControllerBase {
 
 	public void testHttpStatusCode404() throws Exception {
 		mvc.perform(get("/api")).andExpect(status().isNotFound());
+	}
+
+	@Override
+	protected BaseController getController() {
+		return controller;
 	}
 
 }

@@ -33,7 +33,7 @@ import com.alibaba.fastjson.JSONObject;
 @RestController
 @RequestMapping
 // ("/query/order")
-public class PractiseController {
+public class PractiseController extends BaseController{
 	private static final Logger log = LoggerFactory.getLogger(PractiseController.class);
 
 	private static final String STATUS_SUCCESS = "Sucess";
