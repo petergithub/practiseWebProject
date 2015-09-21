@@ -14,5 +14,8 @@ public class Constants {
 	public static final String OrderAsc = "asc";
 	public static final int PageNoDefault = 1;
 	public static final int PageSizeDefault = 20;
-	public static final String dateFormat = "yyyyMMdd HH:mm:ss";
+	public static final String dateFormat = "yyyy-MM-dd HH:mm:ss";
+	
+	public static final String ResponseCode_Success = "0";
+	public static final String ResponseMsg_Success = "Sucess";
 }
