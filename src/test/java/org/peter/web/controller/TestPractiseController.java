@@ -64,7 +64,6 @@ public class TestPractiseController extends TestSpringControllerBase {
 	public void testGetBeanArray() throws Exception {
 
 		Bean bean = new Bean(1l, "name1", "value1");
-
 		mvc.perform(get("/getBeanArray")).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
