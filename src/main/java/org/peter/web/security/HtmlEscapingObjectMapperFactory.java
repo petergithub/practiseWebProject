@@ -8,6 +8,10 @@ import com.fasterxml.jackson.core.io.CharacterEscapes;
 import com.fasterxml.jackson.core.io.SerializedString;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * @author http://stackoverflow.com/questions/25403676/initbinder-with-requestbody-escaping-xss-in-spring-3-2-4
+ * @version Date：Sep 23, 2015 1:34:34 PM
+ */
 public class HtmlEscapingObjectMapperFactory implements FactoryBean<ObjectMapper> {
 
 	private final ObjectMapper objectMapper;

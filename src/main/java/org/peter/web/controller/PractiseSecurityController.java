@@ -15,14 +15,30 @@ import org.springframework.web.bind.annotation.RestController;
 public class PractiseSecurityController extends BaseController {
 	private static final Logger log = LoggerFactory.getLogger(PractiseSecurityController.class);
 
-	@RequestMapping(value = "/getHtmlTag")
-	@ResponseBody
-	public JsonResult getHtmlTag(String tag) {
-		log.info("Enter getBean(tag[{}])", tag);
+	/**
+	 * "http://localhost:8080/webapp/getJsonHtmlTag?tag=<script>alert()</script>"
+	 */
+	@RequestMapping(value = "/getJsonHtmlTag")
+	public JsonResult getJsonHtmlTag(String tag) {
+		log.info("Enter getJsonHtmlTag(tag[{}])", tag);
 
 		JsonResult result = new JsonResult(ResponseCode_Success, ResponseMsg_Success, tag);
-		
+
 		return result;
+	}
+
+	/**
+	 * "http://localhost:8080/webapp/getStringHtmlTag?tag=<script>alert()</script>"
+	 */
+	@RequestMapping(value = "/getStringHtmlTag")
+	@ResponseBody
+	public String getStringHtmlTag(String tag) {
+		log.info("Enter getStringHtmlTag(tag[{}])", tag);
+
+		JsonResult result = new JsonResult(ResponseCode_Success, ResponseMsg_Success, tag);
+
+		String jsonString = result.toJsonString();
+		return jsonString;
 	}
 
 }

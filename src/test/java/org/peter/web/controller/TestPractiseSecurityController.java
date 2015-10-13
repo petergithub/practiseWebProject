@@ -35,8 +35,9 @@ public class TestPractiseSecurityController extends TestSpringControllerBase {
 	}
 
 	@Test
-	public void testGetFoo() {
-		String URI = "http://localhost:8080/webapp/getHtmlTag?tag=<script>alert()</script>";
+	public void testGetWithRestTemplate() {
+		String URI = "http://localhost:8080/webapp/getJsonHtmlTag?tag=<script>alert()</script>";
+		URI = "http://localhost:8080/webapp/getStringHtmlTag?tag=<script>alert()</script>";
 		RestTemplate restTemplate = new RestTemplate();
 		JsonResult result = restTemplate.getForObject(URI, JsonResult.class, "1");
 		log.info("result = {}", result);
