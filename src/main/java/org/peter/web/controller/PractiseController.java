@@ -7,7 +7,7 @@ import javax.validation.Valid;
 
 import org.peter.bean.Bean;
 import org.peter.bean.BeanImplList;
-import org.peter.bean.BeanList;
+import org.peter.bean.BeanListWrapper;
 import org.peter.bean.Criteria;
 import org.peter.bean.JsonResult;
 import org.peter.util.LogUtil;
@@ -33,14 +33,15 @@ import com.alibaba.fastjson.JSONObject;
 @RestController
 @RequestMapping
 // ("/query/order")
-public class PractiseController extends BaseController{
+public class PractiseController extends BaseController {
 	private static final Logger log = LoggerFactory.getLogger(PractiseController.class);
 
 	private static final String STATUS_SUCCESS = "Sucess";
 	private static final String STATUS_UNKOWN_ERROR = "UnknowError";
 
 	// http://localhost:8080/webapp/getJson?names=['1','2']&id=2
-	@RequestMapping(value = "/getJson", method = { RequestMethod.POST, RequestMethod.GET }, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/getJson", method = { RequestMethod.POST, RequestMethod.GET },
+			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseBody
 	// @ResponseBody is the default value if @RestController is set for the
 	// controller class
@@ -100,6 +101,17 @@ public class PractiseController extends BaseController{
 		log.debug("Exit getBean() result = {}", result);
 		return result.toString();
 	}
+	
+	@RequestMapping(value = "/getBeanCondition", method = RequestMethod.GET)
+	@ResponseBody
+	public String getBeanCondition(@RequestParam("condition") String json,@RequestParam("date") String dateStr,
+			final HttpServletRequest request) {
+		log.info("Enter getBeanCondition(json[{}],dateStr[{}])", json, dateStr);
+		
+		Bean bean = JSON.parseObject(json, Bean.class);
+		String jsonResult = JSON.toJSONString(bean);
+		return LogUtil.buildResult(jsonResult, request, log);
+	}
 
 	@RequestMapping(value = "/getBeanList", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
@@ -113,7 +125,7 @@ public class PractiseController extends BaseController{
 
 	@RequestMapping(value = "/getBeanListWrapper", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
-	public String getBeanListWrapper(@Valid @RequestBody BeanList beans, BindingResult result,
+	public String getBeanListWrapper(@Valid BeanListWrapper beans, BindingResult result,
 			HttpServletRequest request) {
 		log.info("Enter getBeanList(beans[{}])", beans);
 		List<Bean> beanList = beans.getBeans();

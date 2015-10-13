@@ -6,21 +6,21 @@ import java.util.List;
  * @author Shang Pu
  * @version Date: Sep 17, 2015 11:13:55 AM
  */
-public class BeanList {
+public class BeanListWrapper {
 	private List<Bean> beans;
 
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("BeanList [beans=").append(beans).append("]");
+		builder.append("BeanListWrapper [beans=").append(beans).append("]");
 		return builder.toString();
 	}
 
-	public BeanList() {
+	public BeanListWrapper() {
 		super();
 	}
 
-	public BeanList(List<Bean> beans) {
+	public BeanListWrapper(List<Bean> beans) {
 		super();
 		this.beans = beans;
 	}

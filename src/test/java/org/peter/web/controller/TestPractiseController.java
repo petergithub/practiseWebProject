@@ -19,11 +19,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.peter.bean.Bean;
 import org.peter.bean.BeanImplList;
-import org.peter.bean.BeanList;
+import org.peter.bean.BeanListWrapper;
 import org.peter.util.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -67,17 +68,29 @@ public class TestPractiseController extends TestSpringControllerBase {
 		mvc.perform(get("/getBeanArray")).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
-	@Test
 	public void testGetBean() throws Exception {
 		DateTime date = new DateTime();
 		Bean bean = new Bean(1l, "name1", "value1", date.toDate());
 		String json = JSON.toJSONString(bean);
+		// {"creationDate":1444640831362,"id":1,"name":"name1","value":"value1"}
 		log.info("json = {}", json);
 		String creationDate = date.toString(Constants.dateFormat);
 		mvc.perform(
 				get("/getBean").param("id", "1").param("name", "name1").param("value", "value1")
 						.param("creationDate", creationDate)).andExpect(
 				MockMvcResultMatchers.status().isOk());
+		// .andExpect(content().contentType("application/json;charset=UTF-8"));
+	}
+
+	@Test
+	public void testGetBeanCondition() throws Exception {
+		String condition = "{\"condition\":{id:1,name:\"name1\",value:\"value1\"}}";
+
+		String date = new DateTime().toString(Constants.dateFormat);
+//		date = "{\"date\":" + date + "}";
+		log.info("date={}, condition = {}", date,condition);
+		mvc.perform(get("/getBeanCondition").param("condition", condition).param("date", date))
+				.andExpect(MockMvcResultMatchers.status().isOk());
 		// .andExpect(content().contentType("application/json;charset=UTF-8"));
 	}
 
@@ -98,19 +111,35 @@ public class TestPractiseController extends TestSpringControllerBase {
 
 		log.info("json = {}", json);
 		mvc.perform(
-				post("/getBeanImplList").param("beans", json).contentType(APPLICATION_JSON_UTF8)
-						.content(json)).andExpect(MockMvcResultMatchers.status().isOk());
+				post("/getBeanImplList").param("beans", json)
+						.contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(
+				MockMvcResultMatchers.status().isOk());
+	}
+
+	public void testGetBeanListWrapper() throws Exception {
+		List<Bean> beanList = new ArrayList<>();
+		beanList.add(new Bean(null, "name1", "value1"));
+		BeanListWrapper beans = new BeanListWrapper(beanList);
+
+		// json = {"beans":[{"id":1,"name":"name1","value":"value1"}]}
+		String json = JSONArray.toJSONString(beans);
+		json = JSON.toJSONString(beans);
+		log.info("json = {}", json);
+		// mvc.perform(post("/getBeanListWrapper").contentType(MediaType.APPLICATION_JSON).content(json))
+		// .andExpect(MockMvcResultMatchers.status().isOk());
+
+		mvc.perform(post("/getBeanListWrapper").param("beans", json)).andExpect(
+				MockMvcResultMatchers.status().isOk());
 	}
 
 	public void testGetBeanList() throws Exception {
 		List<Bean> beanList = new ArrayList<>();
 		beanList.add(new Bean(null, "name1", "value1"));
-		BeanList beans = new BeanList(beanList);
 
-		// json = {"beans":[{"id":1,"name":"name1","value":"value1"}]}
-		String json = JSONArray.toJSONString(beans);
+		// json = "[{\"name\":\"name1\",\"value\":\"value1\"}]";
+		String json = JSON.toJSONString(beanList);
 		log.info("json = {}", json);
-		mvc.perform(post("/getBeanList").contentType(APPLICATION_JSON_UTF8).content(json))
+		mvc.perform(post("/getBeanList").contentType(MediaType.APPLICATION_JSON).content(json))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 

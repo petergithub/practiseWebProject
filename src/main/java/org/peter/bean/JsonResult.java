@@ -1,14 +1,29 @@
 package org.peter.bean;
 
+import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
+
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SimpleDateFormatSerializer;
+import com.alibaba.fastjson.serializer.ValueFilter;
 
 public class JsonResult {
+	private static final Logger log = LoggerFactory.getLogger(JsonResult.class);
 
 	private String code;
 	private String msg;
 	private Object data;
+
+	public static void main(String[] args) {
+		JsonResult json = new JsonResult("code", "msg<alert>", new Bean(1l, "name<a>", "value"));
+		json.toJsonString();
+		json.toJsonStringFilter();
+	}
 
 	public JsonResult(String code, String msg, Object data) {
 		this.code = code;
@@ -28,7 +43,8 @@ public class JsonResult {
 	}
 
 	/**
-	 * SerializerFeature.DisableCheckSpecialChar：一个对象的字符串属性中如果有特殊字符如双引号，
+	 * com.alibaba.fastjson.serializer.SerializerFeature
+	 * DisableCheckSpecialChar：一个对象的字符串属性中如果有特殊字符如双引号，
 	 * 将会在转成json时带有反斜杠转移符。如果不需要转义 ，可以使用这个属性。默认为false
 	 * QuoteFieldNames———-输出key时是否使用双引号,默认为true
 	 * WriteMapNullValue——–是否输出值为null的字段,默认为false
@@ -40,8 +56,31 @@ public class JsonResult {
 	 * @return
 	 */
 	public String toJsonString() {
-		return JSON.toJSONString(this, FastJsonSerializeConfig.getInstance());
+		String jsonString = JSON.toJSONString(this, FastJsonSerializeConfig.getInstance());
+		log.info("jsonString = {}", jsonString);
+		// String result = StringEscapeUtils.escapeHtml4(jsonString);
+		String result = escape(jsonString);
+		log.info("result = {}", result);
+		return result;
 	}
+
+	public String toJsonStringFilter() {
+		String jsonString = JSON.toJSONString(this, FastJsonSerializeConfig.getInstance(), filter);
+		log.info("jsonString = {}", jsonString);
+		return jsonString;
+	}
+
+	ValueFilter filter = new ValueFilter() {
+		public String process(Object source, String name, Object value) {
+			log.debug("Enter. value[{}]", value);
+			if (value instanceof String) {
+				value = StringEscapeUtils.escapeHtml4((String) value);
+				log.debug("Exit. value[{}]", value);
+				return (String) value;
+			}
+			return JSON.toJSONString(value, FastJsonSerializeConfig.getInstance(), filter);
+		}
+	};
 
 	public String getCode() {
 		return code;
@@ -79,5 +118,38 @@ public class JsonResult {
 		public static SerializeConfig getInstance() {
 			return mapping;
 		}
+	}
+
+	/**
+	 * escape blow character
+	 * <pre>
+	 * {"&", "&amp;"},   // & - ampersand
+	 * {"<", "&lt;"},    // < - less-than
+	 * {">", "&gt;"},    // > - greater-than
+	 * </pre>
+	 */
+	public static String escape(String aText) {
+		final StringBuilder result = new StringBuilder();
+		final StringCharacterIterator iterator = new StringCharacterIterator(aText);
+		char character = iterator.current();
+		while (character != CharacterIterator.DONE) {
+			if (character == '<') {
+				result.append("&lt;");
+			} else if (character == '>') {
+				result.append("&gt;");
+			} else if (character == '&') {
+				result.append("&amp;");
+			}
+			// else if (character == '\"') {
+			// result.append("&quot;");
+			// }
+			else {
+				// the char is not a special one
+				// add it to the result as is
+				result.append(character);
+			}
+			character = iterator.next();
+		}
+		return result.toString();
 	}
 }

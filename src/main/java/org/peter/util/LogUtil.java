@@ -44,6 +44,7 @@ public class LogUtil {
 	public static String buildResult(String result, HttpServletRequest request, Logger log) {
 		// LogUtil.info(log, request.getRequestURI(), IpUtils.getIp(request),
 		// getParameters(request), hb.toString(), ret.toString(), msg);
+		log.info("Exit result = {}", result);
 		return result;
 	}
 	
