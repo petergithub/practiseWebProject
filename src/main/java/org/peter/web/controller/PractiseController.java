@@ -1,5 +1,10 @@
 package org.peter.web.controller;
 
+import static org.peter.util.Constants.ResponseCode_Success;
+import static org.peter.util.Constants.ResponseCode_UnknownError;
+import static org.peter.util.Constants.ResponseMsg_InvalidParameter;
+import static org.peter.util.Constants.ResponseMsg_Success;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +15,7 @@ import org.peter.bean.BeanImplList;
 import org.peter.bean.BeanListWrapper;
 import org.peter.bean.Criteria;
 import org.peter.bean.JsonResult;
+import org.peter.util.Constants;
 import org.peter.util.LogUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +40,8 @@ import com.alibaba.fastjson.JSONObject;
 @RequestMapping
 // ("/query/order")
 public class PractiseController extends BaseController {
-	private static final Logger log = LoggerFactory.getLogger(PractiseController.class);
 
-	private static final String STATUS_SUCCESS = "Sucess";
-	private static final String STATUS_UNKOWN_ERROR = "UnknowError";
+	private static final Logger log = LoggerFactory.getLogger(PractiseController.class);
 
 	// http://localhost:8080/webapp/getJson?names=['1','2']&id=2
 	@RequestMapping(value = "/getJson", method = { RequestMethod.POST, RequestMethod.GET },
@@ -57,7 +61,7 @@ public class PractiseController extends BaseController {
 
 		JSONObject result = new JSONObject();
 		JSONArray ret = new JSONArray();
-		String statusCode = STATUS_SUCCESS;
+		String statusCode = ResponseCode_Success;
 
 		// try catch all Exceptions
 		try {
@@ -73,7 +77,7 @@ public class PractiseController extends BaseController {
 			}
 		} catch (Exception e) {
 			log.error("Exception in OrderStatusApi.getStatus()", e);
-			statusCode = STATUS_UNKOWN_ERROR;
+			statusCode = ResponseCode_UnknownError;
 			result.put("response", statusCode);
 		}
 		result.put("names", ret);
@@ -94,7 +98,7 @@ public class PractiseController extends BaseController {
 		log.info("Enter getBean(bean[{}])", bean);
 
 		JSONObject result = new JSONObject();
-		String statusCode = STATUS_SUCCESS;
+		String statusCode = ResponseCode_Success;
 		result.put("response", statusCode);
 		log.info("JSON.toJSONString(bean) = {}", JSON.toJSONString(bean));
 		result.put("bean", bean);
@@ -201,9 +205,9 @@ public class PractiseController extends BaseController {
 			// [org.springframework.context.support.DefaultMessageSourceResolvable:
 			// codes [criteria.id,id]; arguments []; default message [id]];
 			// default message [Required id]
-			json = new JsonResult("1", "Invalid parameter", criteria);
+			json = new JsonResult(Constants.ResponseCode_InvalidParameter, ResponseMsg_InvalidParameter, criteria);
 		} else {
-			json = new JsonResult("0", "Success", criteria);
+			json = new JsonResult(ResponseCode_Success, ResponseMsg_Success, criteria);
 		}
 		return LogUtil.buildResult(json.toJsonString(), request, log);
 	}

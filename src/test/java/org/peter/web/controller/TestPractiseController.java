@@ -1,5 +1,6 @@
 package org.peter.web.controller;
 
+import static org.peter.util.Constants.ResponseMsg_Success;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
@@ -82,13 +83,12 @@ public class TestPractiseController extends TestSpringControllerBase {
 		// .andExpect(content().contentType("application/json;charset=UTF-8"));
 	}
 
-	@Test
 	public void testGetBeanCondition() throws Exception {
 		String condition = "{\"condition\":{id:1,name:\"name1\",value:\"value1\"}}";
 
 		String date = new DateTime().toString(Constants.dateFormat);
-//		date = "{\"date\":" + date + "}";
-		log.info("date={}, condition = {}", date,condition);
+		// date = "{\"date\":" + date + "}";
+		log.info("date={}, condition = {}", date, condition);
 		mvc.perform(get("/getBeanCondition").param("condition", condition).param("date", date))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 		// .andExpect(content().contentType("application/json;charset=UTF-8"));
@@ -143,11 +143,19 @@ public class TestPractiseController extends TestSpringControllerBase {
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
+	@Test
+	public void testGetCriteria() throws Exception {
+		mvc.perform(
+				get("/getCriteria").param("id", "1").param("value", "value").param("name", " ")
+						.param("description", " ").param("test", "ta"))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(jsonPath("msg", Matchers.is(ResponseMsg_Success)));
+	}
+
 	public void testGetBeanCriteria() throws Exception {
 		mvc.perform(
-				post("/getBeanCriteria").param("id", "1").param("value", "value")
-						.param("name", "name").param("test", "ta")).andExpect(
-				MockMvcResultMatchers.status().isOk());
+				post("/getBeanCriteria").param("id", "1").param("value", "value").param("name", "")
+						.param("test", "ta")).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	// result =

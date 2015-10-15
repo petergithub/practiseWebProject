@@ -16,6 +16,16 @@ public class Constants {
 	public static final int PageSizeDefault = 20;
 	public static final String dateFormat = "yyyy-MM-dd HH:mm:ss";
 	
+	//response code and msg
 	public static final String ResponseCode_Success = "0";
-	public static final String ResponseMsg_Success = "Sucess";
+	public static final String ResponseMsg_Success = "Success";
+	public static final String ResponseCode_UnknownError = "101";
+	public static final String ResponseMsg_UnknownError = "An unknown error has occurred";
+	public static final String ResponseCode_InvalidParameter = "102";
+	public static final String ResponseMsg_InvalidParameter = "Parameter value is invalid";
+	public static final String ResponseCode_InvalidParameter_MerchantId = "106";
+	public static final String ResponseMsg_InvalidParameter_MerchantId = "Invalid Merchant id";
+	public static final String ResponseCode_InvalidParameter_ChannelId = "107";
+	public static final String ResponseMsg_InvalidParameter_ChannelId = "Invalid Channel id";
+	
 }

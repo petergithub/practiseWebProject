@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.peter.util.Constants;
 
 /**
@@ -22,6 +23,8 @@ public class Criteria {
 	private Long id; // 查询ID
 	@NotBlank
 	private String name;
+	@NotEmpty
+	private String description;
 	
 	private List<String> values;
 	

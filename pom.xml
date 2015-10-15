@@ -9,11 +9,13 @@
 	<url></url>
 
 	<properties>
+		<jdk.version>1.7</jdk.version>
 		<junit.version>4.10</junit.version>
 		<spring.version>4.1.1.RELEASE</spring.version>
 		<mybatis.version>3.2.8</mybatis.version>
 		<slf4j.version>1.7.7</slf4j.version>
 		<joda-time.version>2.3</joda-time.version>
+		<jetty.version>7.6.15.v20140411</jetty.version>
 		<servlet.version>3.1.0</servlet.version>
 		<hibernate.validator.version>5.0.3.Final</hibernate.validator.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -59,6 +61,16 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
 			<version>${hibernate.validator.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.el</groupId>
+			<artifactId>javax.el-api</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.el</groupId>
+			<artifactId>el-ri</artifactId>
+			<version>1.0</version>
 		</dependency>
 
 		<!-- mybatis dependencies start -->
@@ -182,6 +194,7 @@
 			<scope>test</scope>
 		</dependency>
 
+
 		<!-- Servlet -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -218,8 +231,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>${jdk.version}</source>
+					<target>${jdk.version}</target>
 				</configuration>
 			</plugin>
 		</plugins>
