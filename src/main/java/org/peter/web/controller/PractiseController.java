@@ -5,6 +5,8 @@ import static org.peter.util.Constants.ResponseCode_UnknownError;
 import static org.peter.util.Constants.ResponseMsg_InvalidParameter;
 import static org.peter.util.Constants.ResponseMsg_Success;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,21 +17,30 @@ import org.peter.bean.BeanImplList;
 import org.peter.bean.BeanListWrapper;
 import org.peter.bean.Criteria;
 import org.peter.bean.JsonResult;
+import org.peter.poi.ExcelTemplate;
+import org.peter.poi.ExcelTemplateManager;
+import org.peter.poi.ExcelUtil;
 import org.peter.util.Constants;
 import org.peter.util.LogUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.util.Assert;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -44,8 +55,8 @@ public class PractiseController extends BaseController {
 	private static final Logger log = LoggerFactory.getLogger(PractiseController.class);
 
 	// http://localhost:8080/webapp/getJson?names=['1','2']&id=2
-	@RequestMapping(value = "/getJson", method = { RequestMethod.POST, RequestMethod.GET },
-			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/getJson", method = { RequestMethod.POST, RequestMethod.GET }, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	// produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	// @ResponseBody is the default value if @RestController is set for the
 	// controller class
@@ -105,13 +116,22 @@ public class PractiseController extends BaseController {
 		log.debug("Exit getBean() result = {}", result);
 		return result.toString();
 	}
+
+	@RequestMapping(value = "/getPathVariable/{id}", method = RequestMethod.GET)
+	@ResponseBody
+	public String getPathVariable(@PathVariable("id") String id, final HttpServletRequest request) {
+		log.info("Enter getPathVariable(id[{}])", id);
+		
+		String jsonResult = JSON.toJSONString(id);
+		return LogUtil.buildResult(jsonResult, request, log);
+	}
 	
 	@RequestMapping(value = "/getBeanCondition", method = RequestMethod.GET)
 	@ResponseBody
-	public String getBeanCondition(@RequestParam("condition") String json,@RequestParam("date") String dateStr,
-			final HttpServletRequest request) {
+	public String getBeanCondition(@RequestParam("condition") String json,
+			@RequestParam("date") String dateStr, final HttpServletRequest request) {
 		log.info("Enter getBeanCondition(json[{}],dateStr[{}])", json, dateStr);
-		
+
 		Bean bean = JSON.parseObject(json, Bean.class);
 		String jsonResult = JSON.toJSONString(bean);
 		return LogUtil.buildResult(jsonResult, request, log);
@@ -205,11 +225,52 @@ public class PractiseController extends BaseController {
 			// [org.springframework.context.support.DefaultMessageSourceResolvable:
 			// codes [criteria.id,id]; arguments []; default message [id]];
 			// default message [Required id]
-			json = new JsonResult(Constants.ResponseCode_InvalidParameter, ResponseMsg_InvalidParameter, criteria);
+			json = new JsonResult(Constants.ResponseCode_InvalidParameter,
+					ResponseMsg_InvalidParameter, criteria);
 		} else {
 			json = new JsonResult(ResponseCode_Success, ResponseMsg_Success, criteria);
 		}
 		return LogUtil.buildResult(json.toJsonString(), request, log);
+	}
+
+	@RequestMapping(value = "/importFile", method = { RequestMethod.POST })
+	public String importFile(MultipartFile file, HttpServletRequest request) {
+		try {
+			byte[] fileBytes = file.getBytes();
+			log.debug("Enter fileSize[{}]", fileBytes.length);
+		} catch (Exception e) {
+			log.error("Exception in PractiseController.importFile()", e);
+		}
+		JsonResult result = new JsonResult(ResponseCode_Success, ResponseMsg_Success, null);
+		return LogUtil.buildResult(result.toJsonString(), request, log);
+	}
+
+	@RequestMapping(value = "/exportFile", method = { RequestMethod.GET })
+	public ResponseEntity<Object> exportFile(HttpServletRequest request) {
+		try {
+			ExcelTemplate template = ExcelTemplateManager.getExcelTemplate(1);
+			List<Bean> beans = new ArrayList<>();
+			beans.add(new Bean(1l, "name1", "value1", new Date()));
+			beans.add(new Bean(2l, "name2", "value2", new Date()));
+			byte[] bytes = ExcelUtil.convertDataToExcelFileBytes(template, beans);
+
+			// 文件下载方法中用来生成ResponseEntity对象
+			String fileName = "fileName.xls";
+			MultiValueMap<String, String> headers = new HttpHeaders();
+			headers.add("Content-Type", "application/octet-stream");
+			headers.add("Content-Length", String.valueOf(bytes.length));
+			headers.add("Content-disposition",
+					"attachment; filename=" + new String(fileName.getBytes("utf-8"), "ISO8859-1"));
+			log.info("createResponseEntityWithFile, fileName:{}, contentLength:{}", fileName,
+					bytes.length);
+			ResponseEntity<Object> responseEntity = new ResponseEntity<Object>(bytes, headers,
+					HttpStatus.CREATED);
+
+			return responseEntity;
+		} catch (Exception e) {
+			log.error("Exception in PractiseController.importFile()", e);
+		}
+		return null;
 	}
 
 	@RequestMapping(value = "forward")

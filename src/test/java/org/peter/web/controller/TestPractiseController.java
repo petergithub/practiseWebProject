@@ -10,6 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,10 +28,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -60,6 +64,12 @@ public class TestPractiseController extends TestSpringControllerBase {
 
 		this.mvc = MockMvcBuilders.standaloneSetup(controller).setViewResolvers(viewResolver())
 				.build();
+	}
+
+	@Test
+	public void testGetPathVariable() throws Exception {
+		mvc.perform(get("/getPathVariable/1"))
+				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print());
 	}
 
 	// NestedServletException
@@ -143,7 +153,6 @@ public class TestPractiseController extends TestSpringControllerBase {
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
-	@Test
 	public void testGetCriteria() throws Exception {
 		mvc.perform(
 				get("/getCriteria").param("id", "1").param("value", "value").param("name", " ")
@@ -156,6 +165,20 @@ public class TestPractiseController extends TestSpringControllerBase {
 		mvc.perform(
 				post("/getBeanCriteria").param("id", "1").param("value", "value").param("name", "")
 						.param("test", "ta")).andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
+	public void testImportFile() throws Exception {
+		FileInputStream file = new FileInputStream(new File(
+				"/home/pu/sp/doing/BatchImportCardsTemplate.xlsx"));
+		MockMultipartFile multiFile = new MockMultipartFile("file", "BatchImportCardsTemplate.xlsx",
+				"multipart/form-data", file);
+		mvc.perform(MockMvcRequestBuilders.fileUpload("/importFile").file(multiFile))
+				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print());
+	}
+
+	public void testExportFile() throws Exception {
+		mvc.perform(post("/exportFile"))
+				.andExpect(status().is2xxSuccessful()).andDo(MockMvcResultHandlers.print());
 	}
 
 	// result =

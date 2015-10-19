@@ -18,11 +18,16 @@ import org.peter.util.Constants;
  */
 public class Criteria {
 
+//	@NotNull: The CharSequence, Collection, Map or Array object is not null, but can be empty.
 	@NotNull(message = "Required id")
 	@Min(3)
 	private Long id; // 查询ID
+	
+//	@NotBlank: The string is not null and the trimmed length is greater than zero. 
 	@NotBlank
 	private String name;
+	
+//	@NotEmpty: The CharSequence, Collection, Map or Array object is not null and size > 0.
 	@NotEmpty
 	private String description;
 	
