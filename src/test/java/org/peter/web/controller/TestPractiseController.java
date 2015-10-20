@@ -66,12 +66,6 @@ public class TestPractiseController extends TestSpringControllerBase {
 				.build();
 	}
 
-	@Test
-	public void testGetPathVariable() throws Exception {
-		mvc.perform(get("/getPathVariable/1"))
-				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print());
-	}
-
 	// NestedServletException
 	public void testGetBeanArray() throws Exception {
 
@@ -79,6 +73,7 @@ public class TestPractiseController extends TestSpringControllerBase {
 		mvc.perform(get("/getBeanArray")).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
+	@Test
 	public void testGetBean() throws Exception {
 		DateTime date = new DateTime();
 		Bean bean = new Bean(1l, "name1", "value1", date.toDate());
@@ -91,6 +86,11 @@ public class TestPractiseController extends TestSpringControllerBase {
 						.param("creationDate", creationDate)).andExpect(
 				MockMvcResultMatchers.status().isOk());
 		// .andExpect(content().contentType("application/json;charset=UTF-8"));
+	}
+
+	public void testGetPathVariable() throws Exception {
+		mvc.perform(get("/getPathVariable/1"))
+				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print());
 	}
 
 	public void testGetBeanCondition() throws Exception {

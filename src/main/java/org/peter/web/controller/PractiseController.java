@@ -25,6 +25,7 @@ import org.peter.util.LogUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -53,6 +54,10 @@ import com.alibaba.fastjson.JSONObject;
 public class PractiseController extends BaseController {
 
 	private static final Logger log = LoggerFactory.getLogger(PractiseController.class);
+
+//	@Value("#{jdbc['jdbc.url']}")
+	@Value("${jdbc.url}")
+	private String url = "jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf8";
 
 	// http://localhost:8080/webapp/getJson?names=['1','2']&id=2
 	@RequestMapping(value = "/getJson", method = { RequestMethod.POST, RequestMethod.GET }, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -94,8 +99,7 @@ public class PractiseController extends BaseController {
 		result.put("names", ret);
 		result.put("id", id);
 
-		log.debug("Exit getJson() result = {}", result);
-		return result.toString();
+		return LogUtil.buildResult(JSON.toJSONString(result), request, log);
 	}
 
 	// http://localhost:8080/webapp/getBean?name=n1&id=1
@@ -107,25 +111,21 @@ public class PractiseController extends BaseController {
 	@ResponseBody
 	public String getBean(Bean bean, final HttpServletRequest request) {
 		log.info("Enter getBean(bean[{}])", bean);
+		JsonResult json = new JsonResult(ResponseCode_Success, ResponseMsg_Success, bean);
 
-		JSONObject result = new JSONObject();
-		String statusCode = ResponseCode_Success;
-		result.put("response", statusCode);
-		log.info("JSON.toJSONString(bean) = {}", JSON.toJSONString(bean));
-		result.put("bean", bean);
-		log.debug("Exit getBean() result = {}", result);
-		return result.toString();
+		return LogUtil.buildResult(JSON.toJSONString(json), request, log);
 	}
 
 	@RequestMapping(value = "/getPathVariable/{id}", method = RequestMethod.GET)
 	@ResponseBody
 	public String getPathVariable(@PathVariable("id") String id, final HttpServletRequest request) {
 		log.info("Enter getPathVariable(id[{}])", id);
-		
-		String jsonResult = JSON.toJSONString(id);
-		return LogUtil.buildResult(jsonResult, request, log);
+
+		JsonResult json = new JsonResult(ResponseCode_Success, ResponseMsg_Success, id);
+
+		return LogUtil.buildResult(JSON.toJSONString(json), request, log);
 	}
-	
+
 	@RequestMapping(value = "/getBeanCondition", method = RequestMethod.GET)
 	@ResponseBody
 	public String getBeanCondition(@RequestParam("condition") String json,
@@ -133,8 +133,9 @@ public class PractiseController extends BaseController {
 		log.info("Enter getBeanCondition(json[{}],dateStr[{}])", json, dateStr);
 
 		Bean bean = JSON.parseObject(json, Bean.class);
-		String jsonResult = JSON.toJSONString(bean);
-		return LogUtil.buildResult(jsonResult, request, log);
+		JsonResult jsonResult = new JsonResult(ResponseCode_Success, ResponseMsg_Success, bean);
+
+		return LogUtil.buildResult(JSON.toJSONString(jsonResult), request, log);
 	}
 
 	@RequestMapping(value = "/getBeanList", method = { RequestMethod.GET, RequestMethod.POST })
