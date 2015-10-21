@@ -21,11 +21,11 @@ import org.springframework.web.client.RestTemplate;
 @ContextConfiguration(locations = { "classpath:spring-service.xml", "classpath:spring-mvc.xml",
 		"classpath:spring-xss.xml" })
 @WebAppConfiguration
-public class TestPractiseSecurityController extends TestSpringControllerBase {
-	private static final Logger log = LoggerFactory.getLogger(TestPractiseSecurityController.class);
+public class TestPracticeSecurityController extends TestSpringControllerBase {
+	private static final Logger log = LoggerFactory.getLogger(TestPracticeSecurityController.class);
 
 	@Autowired
-	private PractiseSecurityController controller;
+	private PracticeSecurityController controller;
 
 	public void testGetHtmlTag() throws Exception {
 		String tag = "<script>alert()</script>";

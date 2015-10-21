@@ -24,11 +24,11 @@ import com.alibaba.fastjson.JSON;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:spring*.xml" })
 @WebAppConfiguration
-public class TestPractiseBinderController extends TestSpringControllerBase {
-	private static final Logger log = LoggerFactory.getLogger(TestPractiseBinderController.class);
+public class TestPracticeBinderController extends TestSpringControllerBase {
+	private static final Logger log = LoggerFactory.getLogger(TestPracticeBinderController.class);
 
 	@Autowired
-	private PractiseBinderController controller;
+	private PracticeBinderController controller;
 
 	@Test
 	public void testGetDate() throws Exception {

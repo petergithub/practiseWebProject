@@ -51,9 +51,9 @@ import com.alibaba.fastjson.JSONObject;
 @RestController
 @RequestMapping
 // ("/query/order")
-public class PractiseController extends BaseController {
+public class PracticeController extends BaseController {
 
-	private static final Logger log = LoggerFactory.getLogger(PractiseController.class);
+	private static final Logger log = LoggerFactory.getLogger(PracticeController.class);
 
 //	@Value("#{jdbc['jdbc.url']}")
 	@Value("${jdbc.url}")
@@ -240,7 +240,7 @@ public class PractiseController extends BaseController {
 			byte[] fileBytes = file.getBytes();
 			log.debug("Enter fileSize[{}]", fileBytes.length);
 		} catch (Exception e) {
-			log.error("Exception in PractiseController.importFile()", e);
+			log.error("Exception in PracticeController.importFile()", e);
 		}
 		JsonResult result = new JsonResult(ResponseCode_Success, ResponseMsg_Success, null);
 		return LogUtil.buildResult(result.toJsonString(), request, log);
@@ -269,7 +269,7 @@ public class PractiseController extends BaseController {
 
 			return responseEntity;
 		} catch (Exception e) {
-			log.error("Exception in PractiseController.importFile()", e);
+			log.error("Exception in PracticeController.importFile()", e);
 		}
 		return null;
 	}

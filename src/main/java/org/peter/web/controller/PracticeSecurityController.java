@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping
-public class PractiseSecurityController extends BaseController {
-	private static final Logger log = LoggerFactory.getLogger(PractiseSecurityController.class);
+public class PracticeSecurityController extends BaseController {
+	private static final Logger log = LoggerFactory.getLogger(PracticeSecurityController.class);
 
 	/**
 	 * "http://localhost:8080/webapp/getJsonHtmlTag?tag=<script>alert()</script>"

@@ -23,8 +23,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class PractiseBinderController extends BaseController {
-	private static final Logger log = LoggerFactory.getLogger(PractiseBinderController.class);
+public class PracticeBinderController extends BaseController {
+	private static final Logger log = LoggerFactory.getLogger(PracticeBinderController.class);
 
 	@RequestMapping(value = "/getDate")
 	@ResponseBody
