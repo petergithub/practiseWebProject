@@ -116,7 +116,7 @@ public class PracticeController extends BaseController {
 		return LogUtil.buildResult(JSON.toJSONString(json), request, log);
 	}
 
-	@RequestMapping(value = "/getPathVariable/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getPathVariable/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = "application/json;charset=UTF-8")
 	@ResponseBody
 	public String getPathVariable(@PathVariable("id") String id, final HttpServletRequest request) {
 		log.info("Enter getPathVariable(id[{}])", id);
@@ -126,7 +126,7 @@ public class PracticeController extends BaseController {
 		return LogUtil.buildResult(JSON.toJSONString(json), request, log);
 	}
 
-	@RequestMapping(value = "/getBeanCondition", method = RequestMethod.GET)
+	@RequestMapping(value = "/getBeanCondition")
 	@ResponseBody
 	public String getBeanCondition(@RequestParam("condition") String json,
 			@RequestParam("date") String dateStr, final HttpServletRequest request) {

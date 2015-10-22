@@ -3,6 +3,7 @@ package org.peter.web.controller;
 import static org.peter.util.Constants.ResponseMsg_Success;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -12,6 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,7 +75,6 @@ public class TestPracticeController extends TestSpringControllerBase {
 		mvc.perform(get("/getBeanArray")).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
-	@Test
 	public void testGetBean() throws Exception {
 		DateTime date = new DateTime();
 		Bean bean = new Bean(1l, "name1", "value1", date.toDate());
@@ -85,23 +86,44 @@ public class TestPracticeController extends TestSpringControllerBase {
 				get("/getBean").param("id", "1").param("name", "name1").param("value", "value1")
 						.param("creationDate", creationDate)).andExpect(
 				MockMvcResultMatchers.status().isOk());
-		// .andExpect(content().contentType("application/json;charset=UTF-8"));
 	}
 
 	public void testGetPathVariable() throws Exception {
-		mvc.perform(get("/getPathVariable/1"))
-				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print());
+		mvc.perform(get("/getPathVariable/1").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print())
+				// .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+				.andExpect(content().contentType("application/json;charset=UTF-8"));
 	}
 
+	@Test
 	public void testGetBeanCondition() throws Exception {
-		String condition = "{\"condition\":{id:1,name:\"name1\",value:\"value1\"}}";
-
+		String condition = "{id:1,name:\"name1\",value:\"value1\"}";
 		String date = new DateTime().toString(Constants.dateFormat);
 		// date = "{\"date\":" + date + "}";
 		log.info("date={}, condition = {}", date, condition);
 		mvc.perform(get("/getBeanCondition").param("condition", condition).param("date", date))
-				.andExpect(MockMvcResultMatchers.status().isOk());
-		// .andExpect(content().contentType("application/json;charset=UTF-8"));
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andDo(MockMvcResultHandlers.print())
+				.andExpect(jsonPath("data.id", Matchers.is(1)))
+				.andExpect(jsonPath("data.name", Matchers.is("name1")));
+		
+		String encode = URLEncoder.encode("{id:1,name:\"name1\",value:\"value1\"}", "UTF-8");
+		log.info("encode = {}", encode);
+		// mvc.perform(
+		// get("/getBeanCondition?condition=" + condition).param(
+		// "date", date)).andExpect(MockMvcResultMatchers.status().isOk())
+		// .andDo(MockMvcResultHandlers.print())
+		// .andExpect(jsonPath("data.id", Matchers.is(1)))
+		// .andExpect(jsonPath("data.name", Matchers.is("name1")));
+
+		String conditionInCorrect = "{\"condition\":{id:1,name:\"name1\",value:\"value1\"}}";
+		// {}
+		net.minidev.json.JSONObject emptyJson = new net.minidev.json.JSONObject();
+		mvc.perform(
+				get("/getBeanCondition").param("condition", conditionInCorrect).param("date", date))
+				.andDo(MockMvcResultHandlers.print())
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(jsonPath("data", Matchers.is(emptyJson)));
 	}
 
 	public void testGetBeanStr() throws Exception {
@@ -109,7 +131,6 @@ public class TestPracticeController extends TestSpringControllerBase {
 		log.info("json = {}", json);
 		mvc.perform(post("/getBeanStr").param("beans", json).param("test", "ta")).andExpect(
 				MockMvcResultMatchers.status().isOk());
-		// .andExpect(content().contentType("application/json;charset=UTF-8"));
 	}
 
 	public void testGetBeanImplList() throws Exception {
@@ -170,15 +191,15 @@ public class TestPracticeController extends TestSpringControllerBase {
 	public void testImportFile() throws Exception {
 		FileInputStream file = new FileInputStream(new File(
 				"/home/pu/sp/doing/BatchImportCardsTemplate.xlsx"));
-		MockMultipartFile multiFile = new MockMultipartFile("file", "BatchImportCardsTemplate.xlsx",
-				"multipart/form-data", file);
+		MockMultipartFile multiFile = new MockMultipartFile("file",
+				"BatchImportCardsTemplate.xlsx", "multipart/form-data", file);
 		mvc.perform(MockMvcRequestBuilders.fileUpload("/importFile").file(multiFile))
 				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print());
 	}
 
 	public void testExportFile() throws Exception {
-		mvc.perform(post("/exportFile"))
-				.andExpect(status().is2xxSuccessful()).andDo(MockMvcResultHandlers.print());
+		mvc.perform(post("/exportFile")).andExpect(status().is2xxSuccessful())
+				.andDo(MockMvcResultHandlers.print());
 	}
 
 	// result =
