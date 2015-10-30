@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeConfig;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.SimpleDateFormatSerializer;
 import com.alibaba.fastjson.serializer.ValueFilter;
 
@@ -42,6 +43,8 @@ public class JsonResult {
 		return builder.toString();
 	}
 
+	private static String dateFormat = "yyyy-MM-dd HH:mm:ss";
+
 	/**
 	 * com.alibaba.fastjson.serializer.SerializerFeature
 	 * DisableCheckSpecialChar：一个对象的字符串属性中如果有特殊字符如双引号，
@@ -56,7 +59,8 @@ public class JsonResult {
 	 * @return
 	 */
 	public String toJsonString() {
-		String jsonString = JSON.toJSONString(this, FastJsonSerializeConfig.getInstance());
+		String jsonString = JSON.toJSONString(this,
+				FastJsonSerializeConfig.getInstance(dateFormat), FastJsonSerializeConfig.features);
 		log.info("jsonString = {}", jsonString);
 		// String result = StringEscapeUtils.escapeHtml4(jsonString);
 		String result = escape(jsonString);
@@ -65,7 +69,9 @@ public class JsonResult {
 	}
 
 	public String toJsonStringFilter() {
-		String jsonString = JSON.toJSONString(this, FastJsonSerializeConfig.getInstance(), filter);
+		String jsonString = JSON.toJSONString(this,
+				FastJsonSerializeConfig.getInstance(dateFormat), filter,
+				FastJsonSerializeConfig.features);
 		log.info("jsonString = {}", jsonString);
 		return jsonString;
 	}
@@ -78,7 +84,8 @@ public class JsonResult {
 				log.debug("Exit. value[{}]", value);
 				return (String) value;
 			}
-			return JSON.toJSONString(value, FastJsonSerializeConfig.getInstance(), filter);
+			return JSON.toJSONString(value, FastJsonSerializeConfig.getInstance(dateFormat),
+					filter, FastJsonSerializeConfig.features);
 		}
 	};
 
@@ -107,21 +114,23 @@ public class JsonResult {
 	}
 
 	static class FastJsonSerializeConfig {
+		public static SerializerFeature[] features = new SerializerFeature[] {
+				SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullNumberAsZero,
+				SerializerFeature.WriteNullStringAsEmpty, SerializerFeature.WriteNullListAsEmpty,
+				SerializerFeature.WriteNullBooleanAsFalse };
 
 		private static SerializeConfig mapping = new SerializeConfig();
-		private static String dateFormat = "yyyy-MM-dd HH:mm:ss";
-		static {
+
+		public static SerializeConfig getInstance(String dateFormat) {
 			mapping.put(java.sql.Date.class, new SimpleDateFormatSerializer(dateFormat));
 			mapping.put(java.util.Date.class, new SimpleDateFormatSerializer(dateFormat));
-		}
-
-		public static SerializeConfig getInstance() {
 			return mapping;
 		}
 	}
 
 	/**
 	 * escape blow character
+	 * 
 	 * <pre>
 	 * {"&", "&amp;"},   // & - ampersand
 	 * {"<", "&lt;"},    // < - less-than
