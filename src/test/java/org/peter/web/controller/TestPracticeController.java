@@ -75,6 +75,7 @@ public class TestPracticeController extends TestSpringControllerBase {
 		mvc.perform(get("/getBeanArray")).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
+	@Test
 	public void testGetBean() throws Exception {
 		DateTime date = new DateTime();
 		Bean bean = new Bean(1l, "name1", "value1", date.toDate());
@@ -83,9 +84,10 @@ public class TestPracticeController extends TestSpringControllerBase {
 		log.info("json = {}", json);
 		String creationDate = date.toString(Constants.dateFormat);
 		mvc.perform(
-				get("/getBean").param("id", "1").param("name", "name1").param("value", "value1")
+				get("/getBean").param("id", "1").param("name", " ").param("value", "value1")
 						.param("creationDate", creationDate)).andExpect(
-				MockMvcResultMatchers.status().isOk());
+				MockMvcResultMatchers.status().isOk())
+				.andDo(MockMvcResultHandlers.print());
 	}
 
 	public void testGetPathVariable() throws Exception {
@@ -95,7 +97,6 @@ public class TestPracticeController extends TestSpringControllerBase {
 				.andExpect(content().contentType("application/json;charset=UTF-8"));
 	}
 
-	@Test
 	public void testGetBeanCondition() throws Exception {
 		String condition = "{id:1,name:\"name1\",value:\"value1\"}";
 		String date = new DateTime().toString(Constants.dateFormat);

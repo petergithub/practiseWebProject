@@ -113,7 +113,7 @@ public class PracticeController extends BaseController {
 		log.info("Enter getBean(bean[{}])", bean);
 		JsonResult json = new JsonResult(ResponseCode_Success, ResponseMsg_Success, bean);
 
-		return LogUtil.buildResult(JSON.toJSONString(json), request, log);
+		return LogUtil.buildResult(json.toJsonString(), request, log);
 	}
 
 	@RequestMapping(value = "/getPathVariable/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = "application/json;charset=UTF-8")
@@ -123,7 +123,7 @@ public class PracticeController extends BaseController {
 
 		JsonResult json = new JsonResult(ResponseCode_Success, ResponseMsg_Success, id);
 
-		return LogUtil.buildResult(JSON.toJSONString(json), request, log);
+		return LogUtil.buildResult(json.toJsonString(), request, log);
 	}
 
 	@RequestMapping(value = "/getBeanCondition")
@@ -135,7 +135,7 @@ public class PracticeController extends BaseController {
 		Bean bean = JSON.parseObject(json, Bean.class);
 		JsonResult jsonResult = new JsonResult(ResponseCode_Success, ResponseMsg_Success, bean);
 
-		return LogUtil.buildResult(JSON.toJSONString(jsonResult), request, log);
+		return LogUtil.buildResult(jsonResult.toJsonString(), request, log);
 	}
 
 	@RequestMapping(value = "/getBeanList", method = { RequestMethod.GET, RequestMethod.POST })

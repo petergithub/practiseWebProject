@@ -5,6 +5,7 @@ import java.util.Date;
 
 import org.peter.util.Constants;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
@@ -26,5 +27,8 @@ public class BaseController {
 		// binder.registerCustomEditor(long.class, new LongEditor());
 		// binder.registerCustomEditor(double.class, new DoubleEditor());
 		// binder.registerCustomEditor(float.class, new FloatEditor());
+		
+		// Trim String
+		binder.registerCustomEditor( String.class, new StringTrimmerEditor( true ) );
 	}
 }
