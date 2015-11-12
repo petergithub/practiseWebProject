@@ -29,6 +29,6 @@ public class BaseController {
 		// binder.registerCustomEditor(float.class, new FloatEditor());
 		
 		// Trim String
-		binder.registerCustomEditor( String.class, new StringTrimmerEditor( true ) );
+		binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
 	}
 }

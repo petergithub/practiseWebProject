@@ -239,7 +239,8 @@ public class PageControlData<T> implements Serializable {
 		if (currentPage > getPageCount()) {
 			currentPage = pageCount;
 		}
-		return ((currentPage - 1) * pageSize > 0 ? (currentPage - 1) * pageSize : 0);
+		startRowNum = (currentPage - 1) * pageSize > 0 ? (currentPage - 1) * pageSize : 0;
+		return startRowNum;
 	}
 
 	/**
@@ -253,7 +254,8 @@ public class PageControlData<T> implements Serializable {
 			currentPage = pageCount;
 		}
 		// 如果当前页小于一则结束序号为页面大小，否则按公式计算
-		return (currentPage - 1) > 0 ? (currentPage - 1) * pageSize + pageSize : pageSize;
+		endRowNum = (currentPage - 1) > 0 ? (currentPage - 1) * pageSize + pageSize : pageSize;
+		return endRowNum;
 	}
 
 	/**
@@ -291,4 +293,6 @@ public class PageControlData<T> implements Serializable {
 	public void setSort(SortData sort) {
 		this.sort = sort;
 	}
+	
+	
 }

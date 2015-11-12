@@ -6,7 +6,7 @@
 
 <h3>Revenue Report</h3>
 
-<table border="1px" cellpadding="8px">
+<table>
 <tr>
 <td>Month</td><td>Revenue</td>
 </tr>

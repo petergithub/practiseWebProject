@@ -72,7 +72,8 @@ public class TestPracticeController extends TestSpringControllerBase {
 	public void testGetBeanArray() throws Exception {
 
 		Bean bean = new Bean(1l, "name1", "value1");
-		mvc.perform(get("/getBeanArray")).andExpect(MockMvcResultMatchers.status().isOk());
+		mvc.perform(get("/getBeanArray").param("id", bean.toString())).andExpect(
+				MockMvcResultMatchers.status().isOk());
 	}
 
 	@Test
@@ -85,8 +86,8 @@ public class TestPracticeController extends TestSpringControllerBase {
 		String creationDate = date.toString(Constants.dateFormat);
 		mvc.perform(
 				get("/getBean").param("id", "1").param("name", " ").param("value", "value1")
-						.param("creationDate", creationDate)).andExpect(
-				MockMvcResultMatchers.status().isOk())
+						.param("creationDate", creationDate))
+				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andDo(MockMvcResultHandlers.print());
 	}
 
@@ -107,7 +108,7 @@ public class TestPracticeController extends TestSpringControllerBase {
 				.andDo(MockMvcResultHandlers.print())
 				.andExpect(jsonPath("data.id", Matchers.is(1)))
 				.andExpect(jsonPath("data.name", Matchers.is("name1")));
-		
+
 		String encode = URLEncoder.encode("{id:1,name:\"name1\",value:\"value1\"}", "UTF-8");
 		log.info("encode = {}", encode);
 		// mvc.perform(
