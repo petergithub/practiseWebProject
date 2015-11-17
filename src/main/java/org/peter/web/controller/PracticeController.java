@@ -34,6 +34,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.Assert;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -109,7 +110,7 @@ public class PracticeController extends BaseController {
 	// bean[Bean [id=1, name=n1,n2, value=v1,v2]]
 	@RequestMapping(value = "/getBean", method = RequestMethod.GET)
 	@ResponseBody
-	public String getBean(Bean bean, final HttpServletRequest request) {
+	public String getBean(@Validated({Bean.GetBeanCheck.class}) Bean bean, final HttpServletRequest request) {
 		log.info("Enter getBean(bean[{}])", bean);
 		JsonResult json = new JsonResult(ResponseCode_Success, ResponseMsg_Success, bean);
 
@@ -191,7 +192,7 @@ public class PracticeController extends BaseController {
 
 	@RequestMapping(value = "/getBeanCriteria", method = { RequestMethod.GET, RequestMethod.POST })
 	@ResponseBody
-	public String getBeanCriteria(Criteria criteria, Bean bean, HttpServletRequest request) {
+	public String getBeanCriteria(Criteria criteria, @Valid Bean bean, HttpServletRequest request) {
 		log.info("Enter getBeanCriteria(bean[{}])", bean);
 		log.info("criteria = {}", criteria);
 

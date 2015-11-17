@@ -6,6 +6,8 @@ import static org.peter.util.Constants.ResponseMsg_Success;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.validation.Valid;
+
 import org.peter.bean.Bean;
 import org.peter.bean.Criteria;
 import org.peter.bean.JsonResult;
@@ -28,7 +30,7 @@ public class PracticeBinderController extends BaseController {
 
 	@RequestMapping(value = "/getDate")
 	@ResponseBody
-	public JsonResult getDate(Bean bean) {
+	public JsonResult getDate(@Valid Bean bean) {
 		log.info("Enter getBean(bean[{}])", bean);
 
 		JsonResult result = new JsonResult(ResponseCode_Success, ResponseMsg_Success, null);

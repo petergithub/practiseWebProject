@@ -184,6 +184,7 @@ public class TestPracticeController extends TestSpringControllerBase {
 				.andExpect(jsonPath("msg", Matchers.is(ResponseMsg_Success)));
 	}
 
+	@Test
 	public void testGetBeanCriteria() throws Exception {
 		mvc.perform(
 				post("/getBeanCriteria").param("id", "1").param("value", "value").param("name", "")
