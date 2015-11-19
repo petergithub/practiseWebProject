@@ -236,6 +236,24 @@
 					<target>${jdk.version}</target>
 				</configuration>
 			</plugin>
+			
+			<plugin>
+				<!-- build with profile
+				mvn clean package -DskipTests=true -Pdev -U -->
+                <groupId>com.juvenxu.portable-config-maven-plugin</groupId>
+                <artifactId>portable-config-maven-plugin</artifactId>
+                <version>1.1.5</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>replace-package</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <portableConfig>src/main/portable/${project.activeProfiles[0].id}.xml</portableConfig>
+                </configuration>
+            </plugin>
 		</plugins>
 		<resources>
 			<resource>
@@ -250,4 +268,15 @@
 			</resource>
 		</resources>
 	</build>
+	<profiles>
+		<profile>
+			<id>dev</id>
+		</profile>
+		<profile>
+			<id>test</id>
+		</profile>
+		<profile>
+			<id>prod</id>
+		</profile>
+	</profiles>
 </project>
