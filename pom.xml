@@ -269,14 +269,43 @@
 		</resources>
 	</build>
 	<profiles>
+	<!-- 1. add profiles -->
+	<!-- 2. configure resources in build -->
+	<!-- 3. add dev.properties in the location configured -->
+		<profile>
+			<id>local</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<filters>
+					<filter>src/main/resources/environment/local.properties</filter>
+				</filters>
+			</build>
+		</profile>
 		<profile>
 			<id>dev</id>
+			<build>
+				<filters>
+					<filter>src/main/resources/environment/dev.properties</filter>
+				</filters>
+			</build>
 		</profile>
 		<profile>
-			<id>test</id>
+			<id>tst</id>
+			<build>
+				<filters>
+					<filter></filter>
+				</filters>
+			</build>
 		</profile>
 		<profile>
-			<id>prod</id>
+			<id>prd</id>
+			<build>
+				<filters>
+					<filter></filter>
+				</filters>
+			</build>
 		</profile>
 	</profiles>
 </project>
