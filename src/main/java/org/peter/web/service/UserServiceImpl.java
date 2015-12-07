@@ -2,16 +2,15 @@ package org.peter.web.service;
 
 import java.util.List;
 
-import javax.annotation.Resource;
-
 import org.peter.web.domain.User;
 import org.peter.web.mapper.UserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
-	@Resource
+	@Autowired
 	private UserMapper userMapper;
 
 	@Override

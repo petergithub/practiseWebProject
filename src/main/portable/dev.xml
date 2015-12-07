@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<portable-config>
+	<config-file path="jdbc.properties">
+        <replace key="jdbc.url">jdbc:mysql://172.27.9.14:3306/settlement?useUnicode=true&amp;characterEncoding=UTF-8</replace>
+        <replace key="jdbc.password"></replace>
+    </config-file>
+  	 <config-file path="applicationContext-dubbo-service.xml">
+        <replace xpath="/beans/dubbo:protocol/@port">20892</replace>
+    </config-file>
+</portable-config>

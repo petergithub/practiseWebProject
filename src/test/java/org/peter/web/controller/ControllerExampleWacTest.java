@@ -43,4 +43,10 @@ public class ControllerExampleWacTest extends TestSpringControllerBase {
 				.andExpect(jsonPath("$.order", Matchers.hasSize(2)))
 				.andExpect(jsonPath("$.response", Matchers.is("statusSucess")));
 	}
+
+	@Override
+	protected BaseController getController() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
