@@ -270,7 +270,7 @@
 	</build>
 	<profiles>
 	<!-- 1. add profiles -->
-	<!-- 2. configure resources in build -->
+	<!-- 2. configure resources filtering under build in pom.xml -->
 	<!-- 3. add dev.properties in the location configured -->
 		<profile>
 			<id>local</id>
