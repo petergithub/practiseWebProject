@@ -26,7 +26,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:spring*.xml" })
 @WebAppConfiguration
-public class TestUserController {
+public class UserControllerTest {
 	private MockMvc mvc;
 
 	// @InjectMocks

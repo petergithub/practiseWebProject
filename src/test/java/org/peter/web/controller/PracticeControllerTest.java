@@ -49,8 +49,8 @@ import com.alibaba.fastjson.JSONArray;
 @ContextConfiguration(locations = { "classpath*:spring*.xml" })
 // defaults to "file:src/main/webapp"
 @WebAppConfiguration
-public class TestPracticeController extends TestSpringControllerBase {
-	private static final Logger log = LoggerFactory.getLogger(TestPracticeController.class);
+public class PracticeControllerTest extends SpringControllerTestBase {
+	private static final Logger log = LoggerFactory.getLogger(PracticeControllerTest.class);
 
 	private MockMvc mvc;
 

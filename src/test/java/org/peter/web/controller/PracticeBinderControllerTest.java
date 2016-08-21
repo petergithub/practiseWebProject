@@ -24,8 +24,8 @@ import com.alibaba.fastjson.JSON;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:spring*.xml" })
 @WebAppConfiguration
-public class TestPracticeBinderController extends TestSpringControllerBase {
-	private static final Logger log = LoggerFactory.getLogger(TestPracticeBinderController.class);
+public class PracticeBinderControllerTest extends SpringControllerTestBase {
+	private static final Logger log = LoggerFactory.getLogger(PracticeBinderControllerTest.class);
 
 	@Autowired
 	private PracticeBinderController controller;

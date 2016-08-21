@@ -21,8 +21,8 @@ import org.springframework.web.client.RestTemplate;
 @ContextConfiguration(locations = { "classpath:spring-service.xml", "classpath:spring-mvc.xml",
 		"classpath:spring-xss.xml" })
 @WebAppConfiguration
-public class TestPracticeSecurityController extends TestSpringControllerBase {
-	private static final Logger log = LoggerFactory.getLogger(TestPracticeSecurityController.class);
+public class PracticeSecurityControllerTest extends SpringControllerTestBase {
+	private static final Logger log = LoggerFactory.getLogger(PracticeSecurityControllerTest.class);
 
 	@Autowired
 	private PracticeSecurityController controller;

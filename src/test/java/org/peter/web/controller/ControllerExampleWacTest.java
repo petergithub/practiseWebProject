@@ -19,7 +19,7 @@ import org.springframework.web.context.WebApplicationContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:spring*.xml" })
 @WebAppConfiguration
-public class ControllerExampleWacTest extends TestSpringControllerBase {
+public class ControllerExampleWacTest extends SpringControllerTestBase {
 	private MockMvc mockMvc;
 
 	@Autowired
