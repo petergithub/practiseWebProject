@@ -237,6 +237,7 @@ public class PracticeController extends BaseController {
 
 	@RequestMapping(value = "/importFile", method = { RequestMethod.POST })
 	public String importFile(MultipartFile file, HttpServletRequest request) {
+		log.debug("Enter importFile {}", System.currentTimeMillis()-Long.valueOf(file.getOriginalFilename()));
 		try {
 			byte[] fileBytes = file.getBytes();
 			log.debug("Enter fileSize[{}]", fileBytes.length);

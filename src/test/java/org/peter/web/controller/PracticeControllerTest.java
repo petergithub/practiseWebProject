@@ -185,22 +185,30 @@ public class PracticeControllerTest extends SpringControllerTestBase {
 	}
 
 	@Test
-	public void testGetBeanCriteria() throws Exception {
+	public void getBeanCriteria() throws Exception {
 		mvc.perform(
 				post("/getBeanCriteria").param("id", "1").param("value", "value").param("name", "")
 						.param("test", "ta")).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
-	public void testImportFile() throws Exception {
-		FileInputStream file = new FileInputStream(new File(
-				"/home/pu/sp/doing/BatchImportCardsTemplate.xlsx"));
+	@Test
+	public void importFile() throws Exception {
+		String pathname = "/home/pu/sp/doing/BatchImportCardsTemplate.xlsx";
+		String originalFilename = "BatchImportCardsTemplate.xlsx";
+		pathname = "/home/pu/Documents/backup/ubuntu-14.04.2-desktop/ubuntu-14.04.2-desktop-amd64.iso";
+		pathname = "/home/pu/Documents/backup/ubuntu-14.04.2-desktop/eclipse-jee-mars-1-linux-gtk-x86_64.tar.gz";
+		pathname = "/home/pu/Documents/backup/ubuntu-14.04.2-desktop/jdk-7u80-linux-x64.tar.gz";
+		pathname = "/home/pu/Documents/backup/ubuntu-14.04.2-desktop/sudoers";
+		originalFilename = String.valueOf(System.currentTimeMillis());
+		
+		FileInputStream file = new FileInputStream(new File(pathname));
 		MockMultipartFile multiFile = new MockMultipartFile("file",
-				"BatchImportCardsTemplate.xlsx", "multipart/form-data", file);
+				originalFilename, "multipart/form-data", file);
 		mvc.perform(MockMvcRequestBuilders.fileUpload("/importFile").file(multiFile))
 				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print());
 	}
 
-	public void testExportFile() throws Exception {
+	public void exportFile() throws Exception {
 		mvc.perform(post("/exportFile")).andExpect(status().is2xxSuccessful())
 				.andDo(MockMvcResultHandlers.print());
 	}
@@ -208,7 +216,7 @@ public class PracticeControllerTest extends SpringControllerTestBase {
 	// result =
 	// {"order":[{"orderNums":"1","status":"status1"},{"orderNums":"2","status":"status2"}],"response":"statusSucess"}
 	// http://goessner.net/articles/JsonPath/
-	public void testGetJson() throws Exception {
+	public void getJson() throws Exception {
 		mvc.perform(get("/getJson?orderNums=['1','2']")).andExpect(
 				MockMvcResultMatchers.status().isOk());
 
