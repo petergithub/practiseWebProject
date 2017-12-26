@@ -17,6 +17,18 @@ public class User {
 				+ ", lastName=" + lastName + "]";
 	}
 
+	public User(String email, String password, String firstName, String lastName) {
+		super();
+		this.email = email;
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.creationDate = new Date();
+	}
+
+	public User() {
+	}
+
 	// setters and getters
 
 	public Integer getUserId() {

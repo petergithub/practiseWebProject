@@ -33,7 +33,7 @@
 	</logger>
 
 	<logger name="org.springframework">
-		<level value="trace" />
+		<level value="INFO" />
 	</logger>
 
 	<logger name="org.mybatis">

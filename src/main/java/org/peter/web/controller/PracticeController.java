@@ -5,12 +5,9 @@ import static org.peter.util.Constants.ResponseCode_UnknownError;
 import static org.peter.util.Constants.ResponseMsg_InvalidParameter;
 import static org.peter.util.Constants.ResponseMsg_Success;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 import org.peter.bean.Bean;
 import org.peter.bean.BeanImplList;
@@ -44,9 +41,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 //@Controller
 @RestController
@@ -59,6 +59,16 @@ public class PracticeController extends BaseController {
 //	@Value("#{jdbc['jdbc.url']}")
 	@Value("${jdbc.url}")
 	private String url = "jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&characterEncoding=utf8";
+
+	@RequestMapping(value = "/getEmptyPara", method = { RequestMethod.POST,
+			RequestMethod.GET })
+	@ResponseBody
+	public String getEmptyPara(@RequestParam(required = true) String names,
+			@RequestParam(required = false) Integer id, final HttpServletRequest request) {
+		log.info("Enter getJson(names[{}])", names);
+
+		return "empty";
+	}
 
 	// http://localhost:8080/webapp/getJson?names=['1','2']&id=2
 	@RequestMapping(value = "/getJson", method = { RequestMethod.POST, RequestMethod.GET }, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

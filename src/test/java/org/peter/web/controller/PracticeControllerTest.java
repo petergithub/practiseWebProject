@@ -11,11 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 
 import org.hamcrest.Matchers;
 import org.joda.time.DateTime;
@@ -40,8 +37,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 // detects "WacTests-context.xml" in same package
@@ -149,9 +149,11 @@ public class PracticeControllerTest extends SpringControllerTestBase {
 				MockMvcResultMatchers.status().isOk());
 	}
 
+	@Test
 	public void testGetBeanListWrapper() throws Exception {
 		List<Bean> beanList = new ArrayList<>();
-		beanList.add(new Bean(null, "name1", "value1"));
+		beanList.add(new Bean(1L, "name1", "value1"));
+		beanList.add(new Bean(2L, "name2", "value2"));
 		BeanListWrapper beans = new BeanListWrapper(beanList);
 
 		// json = {"beans":[{"id":1,"name":"name1","value":"value1"}]}
@@ -216,6 +218,7 @@ public class PracticeControllerTest extends SpringControllerTestBase {
 	// result =
 	// {"order":[{"orderNums":"1","status":"status1"},{"orderNums":"2","status":"status2"}],"response":"statusSucess"}
 	// http://goessner.net/articles/JsonPath/
+	@Test
 	public void getJson() throws Exception {
 		mvc.perform(get("/getJson?orderNums=['1','2']")).andExpect(
 				MockMvcResultMatchers.status().isOk());
@@ -228,6 +231,11 @@ public class PracticeControllerTest extends SpringControllerTestBase {
 				.andExpect(jsonPath("$.order[0].status", Matchers.is("status1")))
 				.andExpect(jsonPath("$.response", Matchers.is("statusSucess")))
 				.andDo(MockMvcResultHandlers.print());
+	}
+
+	@Test
+	public void getEmptyPara() throws Exception {
+		mvc.perform(get("/getEmptyPara?names=\"name\"&id=")).andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
 	public void testRedirect() throws Exception {

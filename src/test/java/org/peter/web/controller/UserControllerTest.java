@@ -58,6 +58,16 @@ public class UserControllerTest {
 	}
 
 	@Test
+	public void addUser() throws Exception {
+		mvc.perform(get("/user/addUser")).andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(view().name("showUser")).andExpect(model().attribute("user", is(instanceOf(User.class))))
+				.andExpect(forwardedUrl("/WEB-INF/jsp/showUser.jsp"));
+
+		mvc.perform(post("/user/showUser").param("userId", "1")).andExpect(MockMvcResultMatchers.status().isOk())
+				.andDo(MockMvcResultHandlers.print());
+	}
+
+	@Test
 	public void testShowUserNotFound() throws Exception {
 		mvc.perform(get("/showUser")).andExpect(MockMvcResultMatchers.status().isNotFound());
 	}

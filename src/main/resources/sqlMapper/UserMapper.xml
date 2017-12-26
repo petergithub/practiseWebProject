@@ -28,12 +28,12 @@
 	</select>
 
 	<select id='getAll' resultMap='UserResult'>
-		SELECT * FROM USER
+		SELECT * FROM user
 	</select>
 
 	<insert id='insert' parameterType='User' useGeneratedKeys='true'
 		keyProperty='userId'>
-		INSERT INTO USER(email, password, first_name, last_name, creation_date)
+		INSERT INTO user(email, password, first_name, last_name, creation_date)
 		VALUES(#{email}, #{password}, #{firstName}, #{lastName}, #{creationDate})
 	</insert>
 

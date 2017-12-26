@@ -81,6 +81,17 @@ public class Bean {
 		this.value = value;
 	}
 
+	public Bean(String name, String value) {
+		super();
+		this.name = name;
+		this.value = value;
+	}
+
+	public Bean(String name) {
+		super();
+		this.name = name;
+	}
+
 	public Bean() {
 		super();
 	}

@@ -23,9 +23,24 @@ public class UserController {
 	@RequestMapping("/showUser")
 	public String showUser(Integer userId, HttpServletRequest request, Model model) {
 //		int userId = Integer.parseInt(request.getParameter("userId"));
-		log.info("Enter showUser(userId[{}])", userId);
+		log.info("Enter showUser(userId {})", userId);
 		User user = userService.getUserById(userId);
+		log.info("user {}", user);
 		model.addAttribute("user", user);
 		return "showUser";
+	}
+
+	@RequestMapping("/addUser")
+	public String addUser(User user, HttpServletRequest request, Model model) {
+		log.info("Enter addUser(user {})", user);
+		user = new User("email@gmail.com", "pwd", "test😁", "last");
+		try {
+			userService.insertUser(user);
+		} catch (Exception e) {
+			log.error("insert user", e);
+		}
+		log.info("user {}", user);
+		model.addAttribute("user", user);
+		return "addUser";
 	}
 }

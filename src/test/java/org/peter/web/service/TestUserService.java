@@ -31,7 +31,7 @@ public class TestUserService {
 		log.info(JSON.toJSONString(user));
 	}
 
-	// @Test
+	@Test
 	public void testUpdateUser() {
 		long timestamp = System.currentTimeMillis();
 		User user = userService.getUserById(2);
@@ -43,16 +43,20 @@ public class TestUserService {
 		Assert.assertEquals(user.getLastName(), updatedUser.getLastName());
 	}
 
-	// @Test
+	@Test
 	public void testInsertUser() {
 		User user = new User();
 		user.setEmail("test_email_" + System.currentTimeMillis() + "@gmail.com");
 		user.setPassword("secret");
-		user.setFirstName("TestFirstName");
+		user.setFirstName("test😁TestFirstName");
 		user.setLastName("TestLastName");
 		user.setCreationDate(new Date());
 
-		userService.insertUser(user);
+		try {
+			userService.insertUser(user);
+		} catch (Exception e) {
+			log.error("insert user", e);
+		}
 		Assert.assertTrue(user.getUserId() != 0);
 		User createdUser = userService.getUserById(user.getUserId());
 		Assert.assertNotNull(createdUser);
