@@ -1,6 +1,6 @@
 package org.peter.web.controller;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.Before;
 import org.springframework.http.MediaType;
@@ -11,7 +11,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 public abstract class SpringControllerTestBase {
 	protected MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(),
-			MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
+			MediaType.APPLICATION_JSON.getSubtype(), StandardCharsets.UTF_8);
     protected static final String VIEW_RESOLVER_PREFIX = "/WEB-INF/jsp/";
     protected static final String VIEW_RESOLVER_SUFFIX = ".jsp";
 	protected MockMvc mvc;
