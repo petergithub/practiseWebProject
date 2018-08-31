@@ -69,7 +69,7 @@ public class PracticeControllerTest extends SpringControllerTestBase {
 	}
 
 	// NestedServletException
-	public void testGetBeanArray() throws Exception {
+	public void getBeanArray() throws Exception {
 
 		Bean bean = new Bean(1l, "name1", "value1");
 		mvc.perform(get("/getBeanArray").param("id", bean.toString())).andExpect(
@@ -77,7 +77,7 @@ public class PracticeControllerTest extends SpringControllerTestBase {
 	}
 
 	@Test
-	public void testGetBean() throws Exception {
+	public void getBean() throws Exception {
 		DateTime date = new DateTime();
 		Bean bean = new Bean(1l, "name1", "value1", date.toDate());
 		String json = JSON.toJSONString(bean);
@@ -91,14 +91,14 @@ public class PracticeControllerTest extends SpringControllerTestBase {
 				.andDo(MockMvcResultHandlers.print());
 	}
 
-	public void testGetPathVariable() throws Exception {
+	public void getPathVariable() throws Exception {
 		mvc.perform(get("/getPathVariable/1").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andDo(MockMvcResultHandlers.print())
 				// .andExpect(content().contentType(MediaType.APPLICATION_JSON));
 				.andExpect(content().contentType("application/json;charset=UTF-8"));
 	}
 
-	public void testGetBeanCondition() throws Exception {
+	public void getBeanCondition() throws Exception {
 		String condition = "{id:1,name:\"name1\",value:\"value1\"}";
 		String date = new DateTime().toString(Constants.dateFormat);
 		// date = "{\"date\":" + date + "}";
@@ -128,14 +128,14 @@ public class PracticeControllerTest extends SpringControllerTestBase {
 				.andExpect(jsonPath("data", Matchers.is(emptyJson)));
 	}
 
-	public void testGetBeanStr() throws Exception {
+	public void getBeanStr() throws Exception {
 		String json = "\"beans\":[{id:1,name:\"name1\",value:\"value1\"}]";
 		log.info("json = {}", json);
 		mvc.perform(post("/getBeanStr").param("beans", json).param("test", "ta")).andExpect(
 				MockMvcResultMatchers.status().isOk());
 	}
 
-	public void testGetBeanImplList() throws Exception {
+	public void getBeanImplList() throws Exception {
 		BeanImplList beans = new BeanImplList();
 		beans.add(new Bean(1l, "name1", "value1"));
 
@@ -150,7 +150,7 @@ public class PracticeControllerTest extends SpringControllerTestBase {
 	}
 
 	@Test
-	public void testGetBeanListWrapper() throws Exception {
+	public void getBeanListWrapper() throws Exception {
 		List<Bean> beanList = new ArrayList<>();
 		beanList.add(new Bean(1L, "name1", "value1"));
 		beanList.add(new Bean(2L, "name2", "value2"));
@@ -167,7 +167,7 @@ public class PracticeControllerTest extends SpringControllerTestBase {
 				MockMvcResultMatchers.status().isOk());
 	}
 
-	public void testGetBeanList() throws Exception {
+	public void getBeanList() throws Exception {
 		List<Bean> beanList = new ArrayList<>();
 		beanList.add(new Bean(null, "name1", "value1"));
 
@@ -178,7 +178,7 @@ public class PracticeControllerTest extends SpringControllerTestBase {
 				.andExpect(MockMvcResultMatchers.status().isOk());
 	}
 
-	public void testGetCriteria() throws Exception {
+	public void getCriteria() throws Exception {
 		mvc.perform(
 				get("/getCriteria").param("id", "1").param("value", "value").param("name", " ")
 						.param("description", " ").param("test", "ta"))
